@@ -1,0 +1,1421 @@
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>理化快答王</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout concept: 實驗桌面。四個色塊答案（像實驗室的色票）、左右兩塊計分板、頂部細長倒數條。 */
+:root{
+  --bg:#eef1f6; --surface:#ffffff; --ink:#101828; --muted:#566074; --line:#d3d9e4;
+  --brand:#1f4fd8; --on-brand:#ffffff;
+  --o1:#c8321f; --o1i:#ffffff; --o2:#1f5fd6; --o2i:#ffffff; --o3:#e8a400; --o3i:#1d1400; --o4:#0b7f58; --o4i:#ffffff;
+  --good:#0b7f58; --bad:#c8321f; --track:#dde2ec; --veil:rgba(238,241,246,.32); --glass:rgba(255,255,255,.82);
+  --font:'Noto Sans TC','PingFang TC','Microsoft JhengHei',system-ui,sans-serif;
+  --num:'Space Grotesk','Noto Sans TC',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c111c; --surface:#151c2b; --ink:#eef2fa; --muted:#9aa6ba; --line:#263049; --track:#222c42;
+    --brand:#86a3ff; --on-brand:#0a1233;
+    --o1:#ff7a66; --o1i:#2a0a05; --o2:#7ba4ff; --o2i:#07163d; --o3:#ffc53d; --o3i:#2a1d00; --o4:#3dd6a0; --o4i:#04271c;
+    --good:#3dd6a0; --bad:#ff7a66; --veil:rgba(8,12,22,.55); --glass:rgba(21,28,43,.82); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c111c; --surface:#151c2b; --ink:#eef2fa; --muted:#9aa6ba; --line:#263049; --track:#222c42;
+  --brand:#86a3ff; --on-brand:#0a1233;
+  --o1:#ff7a66; --o1i:#2a0a05; --o2:#7ba4ff; --o2i:#07163d; --o3:#ffc53d; --o3i:#2a1d00; --o4:#3dd6a0; --o4i:#04271c;
+  --good:#3dd6a0; --bad:#ff7a66; --veil:rgba(8,12,22,.55); --glass:rgba(21,28,43,.82); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--font);
+  padding-block:12px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+button,input{font:inherit;color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;letter-spacing:.02em;color:var(--brand)}
+.brand svg{width:30px;height:30px;flex:none}
+.chip{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;min-width:0}
+.chip img{width:30px;height:30px;border-radius:50%;flex:none;display:block}
+.chip .nm{font-weight:700;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip .lv{font:700 13px var(--num);background:var(--brand);color:var(--on-brand);border-radius:999px;padding:1px 9px}
+
+h1{font-size:clamp(28px,7vw,44px);line-height:1.15;font-weight:900;margin:0;text-wrap:balance}
+h2{font-size:20px;font-weight:900;margin:0}
+p{margin:0}
+.lead{color:var(--muted);margin-top:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.note{color:var(--muted);font-size:14px}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;min-height:44px}
+.btn:hover{border-color:var(--brand)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.seg{display:flex;gap:0;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;border:0;background:transparent;padding:9px 6px;font-weight:700;cursor:pointer;min-height:42px}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+input[type=text],input[type=search],input:not([type]){border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 12px;min-height:44px;min-width:0;flex:1}
+.bar{height:10px;background:var(--track);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .6s ease}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stats b{display:block;font:700 22px var(--num)}
+.stats span{font-size:13px;color:var(--muted)}
+.pro{display:flex;align-items:center;gap:12px}
+.pro img{width:52px;height:52px;border-radius:50%;flex:none}
+.pro .t{font-weight:900;font-size:18px}
+.pro .s{color:var(--muted);font-size:14px}
+
+.lb{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.lb li{display:grid;grid-template-columns:2em 30px 1fr auto auto;gap:10px;align-items:center;padding:7px 10px;border-radius:8px}
+.lb li.me{background:color-mix(in srgb,var(--brand) 14%,transparent)}
+.lb .rk{font:700 15px var(--num);color:var(--muted)}
+.lb .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.lb .lv,.lb .xp{font:700 14px var(--num)}
+.lb .xp{color:var(--muted);min-width:4.2em;text-align:right}
+
+/* game */
+.board{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}
+.plate{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--o2);border-radius:12px;padding:8px 12px;min-width:0;display:flex;flex-direction:column;gap:0}
+.plate.opp{border-top-color:var(--o1);text-align:right}
+.plate .pn{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plate .pl{font:700 12px var(--num);color:var(--muted)}
+.plate .ps{font:700 clamp(28px,8vw,40px)/1.1 var(--num);font-variant-numeric:tabular-nums}
+.plate .st{font-size:14px;min-height:1.4em;font-weight:700;color:var(--muted)}
+.plate .st.good{color:var(--good)}.plate .st.bad{color:var(--bad)}
+.bump{animation:bump .35s ease}
+@keyframes bump{40%{transform:scale(1.12)}}
+.mid{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:4px;font-variant-numeric:tabular-nums}
+.mid .qn{font:700 14px var(--num);color:var(--muted)}
+.mid .tm{font:700 clamp(26px,7vw,36px)/1 var(--num)}
+.mid .quit{border:0;background:transparent;color:var(--muted);font-size:13px;cursor:pointer;padding:6px 4px;min-height:32px}
+.timer{height:12px;background:var(--track);border-radius:99px;overflow:hidden}
+.timer>i{display:block;height:100%;width:100%;background:var(--brand);transform-origin:left;border-radius:99px}
+.timer>i.low{background:var(--bad)}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 20px;min-height:112px;display:flex;align-items:center;
+  font-size:clamp(22px,5.6vw,34px);line-height:1.3;font-weight:900;text-wrap:balance}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{position:relative;border:0;border-radius:14px;min-height:clamp(88px,17vh,128px);padding:26px 12px 12px;cursor:pointer;
+  font-size:clamp(18px,4.6vw,28px);font-weight:900;line-height:1.2;display:flex;align-items:center;justify-content:center;text-align:center;
+  transition:opacity .2s,transform .1s,box-shadow .2s;overflow-wrap:anywhere}
+.opt:active:not(:disabled){transform:scale(.98)}
+.opt .k{position:absolute;left:10px;top:8px;font:700 13px var(--num);opacity:.8;border:1.5px solid currentColor;border-radius:6px;padding:0 6px}
+.opt[data-i="0"]{background:var(--o1);color:var(--o1i)}
+.opt[data-i="1"]{background:var(--o2);color:var(--o2i)}
+.opt[data-i="2"]{background:var(--o3);color:var(--o3i)}
+.opt[data-i="3"]{background:var(--o4);color:var(--o4i)}
+.opt:disabled{cursor:default}
+.opt.dim{opacity:.3}
+.opt.right{box-shadow:0 0 0 4px var(--bg),0 0 0 8px var(--good)}
+.opt.wrong{box-shadow:0 0 0 4px var(--bg),0 0 0 8px var(--bad);opacity:.55}
+.hint{text-align:center;color:var(--muted);font-size:13px}
+@media (hover:none){.kbd{display:none}}
+.count{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--bg) 88%,transparent);z-index:20;
+  font:700 clamp(96px,28vw,200px)/1 var(--num);color:var(--brand)}
+
+/* lobby / result */
+.code{font:700 clamp(54px,16vw,96px)/1 var(--num);letter-spacing:.12em;color:var(--brand)}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;text-align:center}
+.vs .big{font:700 clamp(40px,12vw,64px)/1 var(--num)}
+.vs .who{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vs .x{color:var(--muted);font-weight:700}
+.win{color:var(--good)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:min(92vw,520px);
+  background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:700;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s;text-align:center}
+.toast.on{opacity:1}
+
+#bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat;background-color:var(--bg)}
+#bg::after{content:"";position:absolute;inset:0;background:var(--veil)}
+.top,.hero{background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:10px 14px;backdrop-filter:blur(6px)}
+.hero{padding:16px 18px}
+.hint{background:var(--glass);border-radius:999px;padding:3px 12px;align-self:center}
+.av{display:inline-block;flex:none;color:var(--ink);line-height:0;background:color-mix(in srgb,var(--brand) 12%,var(--surface));overflow:hidden}
+.av svg{width:100%;height:100%;display:block}
+.av.xs{width:30px;height:30px;border-radius:50%}
+.av.sm{width:34px;height:34px;border-radius:50%}
+.av.md{width:64px;height:64px;border-radius:50%}
+.av.lg{width:78px;height:94px;border-radius:14px}
+.av.xl{width:132px;height:158px;border-radius:16px}
+.av.it{width:92px;height:110px;border-radius:12px}
+button.chip{cursor:pointer;font:inherit;color:inherit}
+.chip .coinn{display:flex;align-items:center;gap:4px;font:700 13px var(--num)}
+.coin{display:inline-block;width:14px;height:14px;border-radius:50%;background:#f2b705;border:2px solid #b8860b;box-sizing:border-box;vertical-align:-2px}
+.coinline{display:flex;align-items:center;gap:6px;font-weight:700}
+.pro .s .coin{margin-right:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip2{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:700;cursor:pointer;min-height:40px;display:inline-flex;align-items:center;gap:6px}
+.chip2 small{font:700 12px var(--num);color:var(--muted)}
+.chip2[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.chip2[aria-pressed="true"] small{color:inherit;opacity:.8}
+.scenes{display:flex;flex-wrap:wrap;gap:8px}
+.sc{position:relative;width:96px;height:64px;border-radius:10px;border:2px solid var(--line);background:var(--surface) center/cover no-repeat;cursor:pointer;padding:0;overflow:hidden}
+.sc[aria-pressed="true"]{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand)}
+.scn{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.58);color:#fff;font-size:12px;font-weight:700;padding:2px 4px;text-align:center}
+.sc[data-s="auto"] .scn{top:0;background:none;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:15px}
+.ph{display:flex;align-items:center;gap:8px;min-width:0}
+.plate.opp .ph{flex-direction:row-reverse}
+.ph .pn{flex:1;min-width:0}
+.qcard{flex-direction:column;align-items:flex-start;justify-content:center;gap:8px}
+.qtag{font:700 13px var(--font);color:var(--brand);border:1.5px solid currentColor;border-radius:999px;padding:1px 10px}
+.vs .av{display:block;margin:0 auto 6px}
+.shopTop{flex-direction:row;align-items:center;gap:18px}
+.shopInfo{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.item.on{border-color:var(--brand);box-shadow:inset 0 0 0 2px var(--brand)}
+.item .nm{font-weight:700}
+.item .btn{width:100%;padding:8px 10px;min-height:40px}
+.seg{background:var(--surface)}
+.brand{white-space:nowrap}
+@media (max-width:480px){.brand svg{display:none}.chip .nm{max-width:5em}.chip .lv{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="bg" aria-hidden="true"></div>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="16" cy="16" rx="13" ry="5.5"/><ellipse cx="16" cy="16" rx="13" ry="5.5" transform="rotate(60 16 16)"/><ellipse cx="16" cy="16" rx="13" ry="5.5" transform="rotate(120 16 16)"/><circle cx="16" cy="16" r="2.6" fill="currentColor" stroke="none"/></svg>
+      <span>理化快答王</span>
+    </div>
+    <button class="chip" id="chip" type="button" aria-label="我的裝扮商店"><span class="av sm" id="chip-av"></span><span class="nm" id="chip-name">訪客</span><span class="lv" id="chip-lv">Lv.1</span><span class="coinn"><i class="coin"></i><span id="chip-coin">0</span></span></button>
+  </header>
+
+  <main>
+    <section id="s-home" class="app">
+      <div class="hero">
+        <h1>國中理化，8 秒內搶答</h1>
+        <p class="lead">答對得分，答得愈快分數愈高。每場 10 題，贏了還能升級。</p>
+      </div>
+      <div class="card" id="c-range">
+        <div class="row" style="justify-content:space-between"><h2>考題範圍</h2><span class="note" id="rg-count"></span></div>
+        <div class="chips" id="rg-chips" role="group" aria-label="選擇考試單元"></div>
+        <p class="note">對戰電腦和雙人對戰都使用這裡選的單元，雙人對戰以房主選的為準。</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h2>對戰電腦</h2>
+          <p class="note">一個人也能練習，選擇電腦的強度。</p>
+          <div class="seg" id="diff" role="group" aria-label="電腦強度">
+            <button type="button" data-d="easy" aria-pressed="false">簡單</button>
+            <button type="button" data-d="mid" aria-pressed="true">普通</button>
+            <button type="button" data-d="hard" aria-pressed="false">困難</button>
+          </div>
+          <button class="btn primary" id="b-ai" type="button">開始對戰</button>
+        </div>
+        <div class="card">
+          <h2>雙人對戰</h2>
+          <p class="note">兩位同學同時作答同一組題目。一人建立房間，另一人輸入代碼加入。</p>
+          <button class="btn primary" id="b-create" type="button">建立房間</button>
+          <form id="f-join" class="row">
+            <label class="sr" for="i-code">房間代碼</label>
+            <input id="i-code" type="text" inputmode="numeric" maxlength="4" placeholder="4 位數代碼" autocomplete="off">
+            <button class="btn" type="submit">加入</button>
+          </form>
+          <p class="note" id="pvp-note"></p>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h2>我的檔案</h2>
+          <div class="pro"><span class="av lg" id="p-av"></span><div><div class="t" id="p-title">實驗學徒</div><div class="s" id="p-xp">0 經驗值</div><div class="s"><i class="coin"></i> <b id="p-coin">0</b> 金幣</div></div></div>
+          <div class="bar" aria-hidden="true"><i id="p-bar" style="width:0%"></i></div>
+          <div class="stats"><div><b id="p-games">0</b><span>場數</span></div><div><b id="p-wins">0</b><span>勝場</span></div><div><b id="p-best">0</b><span>最高分</span></div></div>
+          <button class="btn" id="b-shop" type="button">裝扮商店</button>
+          <form id="f-nick" class="row">
+            <label class="sr" for="p-nick">暱稱</label>
+            <input id="p-nick" type="text" maxlength="10" placeholder="輸入暱稱" autocomplete="off">
+            <button class="btn" type="submit">儲存</button>
+          </form>
+          <p class="note" id="p-acct"></p>
+        </div>
+        <div class="card">
+          <h2>排行榜</h2>
+          <ol class="lb" id="lb"></ol>
+          <p class="note" id="lb-note"></p>
+        </div>
+      </div>
+      <div class="card">
+        <h2>場景</h2>
+        <div class="scenes" id="bg-pick" role="group" aria-label="背景場景"></div>
+        <p class="note">選「自動」，每場比賽會換不同的場景。</p>
+      </div>
+    </section>
+
+    <section id="s-shop" class="app" hidden>
+      <div class="card shopTop">
+        <span class="av xl" id="sh-av"></span>
+        <div class="shopInfo">
+          <h2>裝扮商店</h2>
+          <p class="note">比賽賺到的金幣可以買裝扮，買了會直接穿上。</p>
+          <p class="coinline"><i class="coin"></i> <span id="sh-coin">0</span> 金幣</p>
+          <button class="btn" id="sh-back" type="button">回首頁</button>
+        </div>
+      </div>
+      <div class="seg" id="sh-tabs" role="group" aria-label="裝扮類別">
+        <button type="button" data-s="hat" aria-pressed="true">帽子</button>
+        <button type="button" data-s="face" aria-pressed="false">臉部</button>
+        <button type="button" data-s="body" aria-pressed="false">身體</button>
+        <button type="button" data-s="hand" aria-pressed="false">手持</button>
+      </div>
+      <div class="items" id="sh-items"></div>
+    </section>
+
+    <section id="s-lobby" class="app" hidden>
+      <div class="card">
+        <h2>雙人對戰房間</h2>
+        <p class="note" id="l-hint">把這組代碼告訴同學，對方輸入後就會自動開始。</p>
+        <div class="code" id="l-code">0000</div>
+        <p class="note" id="l-range"></p>
+        <p id="l-status" role="status">等待同學加入…</p>
+        <div class="row"><button class="btn" id="l-cancel" type="button">離開房間</button></div>
+      </div>
+    </section>
+
+    <section id="s-game" class="app" hidden>
+      <div class="board">
+        <div class="plate me"><div class="ph"><span class="av xs" id="g-me-av"></span><div class="pn" id="g-me-name">我</div></div><div class="pl" id="g-me-lv">Lv.1</div><div class="ps" id="g-me-score">0</div><div class="st" id="g-me-st"></div></div>
+        <div class="mid"><div class="qn" id="g-qn">1/10</div><div class="tm" id="g-tm">8.0</div><button class="quit" id="g-quit" type="button">退出</button></div>
+        <div class="plate opp"><div class="ph"><span class="av xs" id="g-op-av"></span><div class="pn" id="g-op-name">對手</div></div><div class="pl" id="g-op-lv">Lv.1</div><div class="ps" id="g-op-score">0</div><div class="st" id="g-op-st"></div></div>
+      </div>
+      <div class="timer" aria-hidden="true"><i id="g-bar"></i></div>
+      <div class="qcard"><div class="qtag" id="g-tag"></div><div id="g-q" aria-live="polite"></div></div>
+      <div class="opts" id="g-opts"></div>
+      <p class="hint" id="g-range"></p>
+      <p class="hint kbd">也可以按鍵盤 1 2 3 4（或 A B C D）作答</p>
+      <div class="count" id="g-count" hidden aria-live="assertive"></div>
+    </section>
+
+    <section id="s-result" class="app" hidden>
+      <div class="card">
+        <h1 id="r-title">對戰結束</h1>
+        <div class="vs">
+          <div><span class="av md" id="r-me-av"></span><div class="who" id="r-me-name"></div><div class="big" id="r-me-score">0</div></div>
+          <div class="x">對</div>
+          <div><span class="av md" id="r-op-av"></span><div class="who" id="r-op-name"></div><div class="big" id="r-op-score">0</div></div>
+        </div>
+        <p id="r-sub" class="note"></p>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between"><b id="r-xp">+0 經驗值</b><b id="r-lv">Lv.1</b></div>
+        <div class="bar" aria-hidden="true"><i id="r-bar" style="width:0%"></i></div>
+        <p class="coinline"><i class="coin"></i> <span id="r-coin"></span></p>
+        <p class="note" id="r-up"></p>
+        <div class="row"><button class="btn primary" id="r-again" type="button">再來一場</button><button class="btn" id="r-home" type="button">回首頁</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+var LIMIT=8000, NQ=10;
+var RAW=`
+mot|力的單位是？|牛頓|公斤|焦耳|瓦特
+mot|速率的算法是？|距離÷時間|時間÷距離|力×距離|質量×加速度
+mot|慣性的大小取決於？|質量|速度|體積|顏色
+mot|牛頓第一運動定律又稱？|慣性定律|加速度定律|作用反作用|萬有引力
+mot|F＝ma 中的 a 是？|加速度|速度|能量|功率
+mot|作用力與反作用力的大小？|相等|作用力較大|反作用力較大|不一定
+mot|等速度直線運動的物體，合力為？|零|向前|向後|不一定
+mot|地表重力加速度約為？|9.8 m/s²|1 m/s²|98 m/s²|3 m/s²
+mot|物體帶到月球上，質量會？|不變|變小|變大|變成零
+mot|滑動摩擦力方向與運動方向？|相反|相同|垂直|不一定
+prs|壓力的算法是？|力÷面積|力×面積|面積÷力|力＋面積
+prs|壓力的單位是？|帕斯卡|牛頓|焦耳|伏特
+prs|浮力的方向是？|向上|向下|向左|向右
+prs|物體漂浮時，浮力？|等於重力|大於重力|小於重力|等於零
+eng|功的算法是？|力×位移|力÷位移|力＋位移|質量×速度
+eng|功的單位是？|焦耳|牛頓|瓦特|安培
+eng|功率的單位是？|瓦特|焦耳|牛頓|伏特
+eng|動能的大小與什麼有關？|質量和速度|顏色|溫度|體積
+eng|物體位置愈高，重力位能？|愈大|愈小|不變|變成零
+eng|能量守恆是指總能量？|不會改變|會增加|會減少|會消失
+eng|施力臂愈長，所需的力？|愈小|愈大|不變|變成零
+eng|定滑輪的功用是？|改變力的方向|省力|省功|增加位移
+mot|不計空氣阻力，自由落體的快慢？|與質量無關|重的較快|輕的較快|不一定
+snd|聲音的傳播需要？|介質|真空|光線|電流
+snd|聲音在哪裡無法傳播？|真空|水中|空氣|鋼鐵
+snd|聲音在哪種介質傳得最快？|固體|液體|氣體|一樣快
+snd|音調高低取決於聲音的？|頻率|振幅|音色|距離
+snd|音量大小取決於聲音的？|振幅|頻率|音色|波速
+snd|頻率的單位是？|赫茲|牛頓|公尺|安培
+lit|下列何者光速最快？|真空|水|玻璃|鑽石
+lit|光的反射，入射角與反射角？|相等|入射角較大|反射角較大|無關
+lit|平面鏡所成的像是？|正立虛像|倒立實像|正立實像|倒立虛像
+lit|凸透鏡又稱為？|會聚透鏡|發散透鏡|平面鏡|凹面鏡
+lit|近視眼應配戴？|凹透鏡|凸透鏡|平面鏡|三稜鏡
+lit|白光通過三稜鏡會？|色散|變黑|變成單色|消失
+lit|光斜射入水中，方向會？|偏折|不變|反向|消失
+lit|光的三原色是？|紅綠藍|紅黃藍|黃綠藍|紅黃綠
+ele|電流的單位是？|安培|伏特|歐姆|瓦特
+ele|電壓的單位是？|伏特|安培|歐姆|焦耳
+ele|電阻的單位是？|歐姆|伏特|安培|瓦特
+ele|歐姆定律：電壓＝？|電流×電阻|電流÷電阻|電阻÷電流|電流＋電阻
+ele|串聯電路中，各處電流？|相同|不同|愈後愈小|為零
+ele|並聯電路中，各支路電壓？|相同|不同|愈後愈小|為零
+ele|電功率的算法是？|電壓×電流|電壓÷電流|電流÷電壓|電壓＋電流
+ele|下列何者是導體？|銅|橡膠|玻璃|塑膠
+ele|下列何者是絕緣體？|橡膠|鐵|銅|鋁
+ele|乾電池把什麼能轉成電能？|化學能|光能|核能|聲能
+ele|磁鐵同名極會？|互相排斥|互相吸引|沒有作用|變成電流
+ele|通電的導線周圍會產生？|磁場|重力場|聲波|沒有變化
+ele|發電機的原理是？|電磁感應|靜電感應|光電效應|化學反應
+ele|保險絲的作用是？|電流過大時熔斷|增加電壓|增加電流|儲存電能
+ele|摩擦起電時，得到電子的物體帶？|負電|正電|不帶電|磁性
+ele|台灣一般家用插座電壓約？|110 伏特|1.5 伏特|12 伏特|1000 伏特
+ele|金屬能導電是因為有？|自由電子|自由質子|自由中子|分子
+hea|水在一大氣壓下的沸點是？|100°C|0°C|50°C|37°C
+hea|水在一大氣壓下的凝固點是？|0°C|100°C|4°C|−10°C
+hea|熱量會自動從哪流向哪？|高溫到低溫|低溫到高溫|隨機流動|不會流動
+hea|太陽的熱傳到地球靠？|輻射|傳導|對流|摩擦
+hea|對流發生在？|液體和氣體|金屬|真空|岩石
+hea|比熱較大的物質，吸熱後升溫？|較慢|較快|一樣|不升溫
+hea|水結成冰時，體積會？|變大|變小|不變|變成零
+hea|溫度升高時，多數物質體積會？|變大|變小|不變|消失
+hea|水銀溫度計利用什麼原理？|熱脹冷縮|蒸發|折射|反射
+hea|熱量的單位是？|卡|公尺|牛頓|伏特
+atm|水的化學式是？|H₂O|CO₂|O₂|NaCl
+atm|二氧化碳的化學式是？|CO₂|CO|O₂|H₂O
+atm|氧的元素符號是？|O|H|C|N
+atm|鈉的元素符號是？|Na|N|K|Ne
+atm|鐵的元素符號是？|Fe|Ag|Au|Cu
+atm|金的元素符號是？|Au|Ag|Al|Ca
+atm|銅的元素符號是？|Cu|Fe|Zn|Co
+atm|空氣中含量最多的氣體是？|氮氣|氧氣|二氧化碳|氫氣
+atm|最輕的元素是？|氫|氦|氧|碳
+atm|原子中帶正電的是？|質子|電子|中子|分子
+atm|原子中不帶電的是？|中子|質子|電子|離子
+atm|電子帶什麼電？|負電|正電|不帶電|磁性
+atm|原子序等於原子的？|質子數|中子數|質量數|分子數
+atm|週期表同一族的元素，性質？|相似|完全不同|都一樣|沒有規律
+atm|下列何者是鹼金屬？|鈉|氯|氧|氦
+atm|下列何者是鹵素？|氯|鈉|氦|鐵
+atm|下列何者是惰性氣體？|氦|氧|氫|氮
+acb|酸性溶液的 pH 值？|小於 7|等於 7|大於 7|等於 14
+acb|純水的 pH 值約為？|7|1|10|14
+acb|藍色石蕊試紙遇酸會變？|紅色|藍色|綠色|黑色
+acb|鹼性溶液會使酚酞變？|紅色|無色|藍色|黃色
+acb|檸檬汁是？|酸性|鹼性|中性|不一定
+acb|肥皂水是？|鹼性|酸性|中性|不一定
+acb|酸和鹼中和會生成？|鹽和水|酸和鹼|氫氣|氧氣
+acb|胃酸的主要成分是？|鹽酸|硫酸|醋酸|硝酸
+acb|食用醋的主要成分是？|醋酸|鹽酸|硫酸|碳酸
+rxn|化學反應前後，總質量？|不變|增加|減少|為零
+rxn|下列何者是純物質？|純水|空氣|海水|鹽水
+rxn|下列何者是混合物？|空氣|純水|氧氣|鐵
+rxn|下列何者是化合物？|水|氧氣|氮氣|鐵
+rxn|下列何者是元素？|氧氣|水|食鹽|空氣
+rxn|下列何者是物理變化？|冰融化|鐵生鏽|木材燃燒|食物腐壞
+rxn|下列何者是化學變化？|鐵生鏽|冰融化|水蒸發|玻璃破裂
+rxn|密度的算法是？|質量÷體積|體積÷質量|質量×體積|質量＋體積
+rxn|水的密度約為？|1 g/cm³|10 g/cm³|0.1 g/cm³|100 g/cm³
+rxn|密度比水小的物體放入水中會？|浮起|下沉|溶解|消失
+rxn|燃燒需要可燃物、氧氣和？|達到燃點|水分|二氧化碳|低溫
+rxn|食鹽水中的溶質是？|食鹽|水|空氣|糖
+rxn|溫度升高，多數固體的溶解度？|變大|變小|不變|變成零
+rxn|乾冰是？|固態二氧化碳|固態水|固態氧|固態氮
+rxn|氫氣燃燒會生成？|水|二氧化碳|氧氣|氮氣
+rxn|電解水時，氫氣與氧氣體積比？|2：1|1：2|1：1|3：1
+rxn|二氧化碳會使澄清石灰水？|變混濁|變紅色|變藍色|沒變化
+mot|速度的單位（國際單位）是？|公尺/秒|公尺|牛頓|公斤
+mot|加速度的單位是？|公尺/秒²|公尺/秒|牛頓|公斤
+mot|質量的單位是？|公斤|牛頓|公尺|秒
+mot|重量是指？|地球對物體的引力|物體的質量|物體的體積|物體的密度
+mot|1 公斤重約等於幾牛頓？|9.8|1|98|0.98
+mot|合力為零時，物體會？|保持靜止或等速|愈來愈快|愈來愈慢|不停轉向
+mot|質量不變，合力愈大，加速度？|愈大|愈小|不變|為零
+mot|合力相同，質量愈大，加速度？|愈小|愈大|不變|為零
+mot|汽車急煞車，乘客前傾是因為？|慣性|重力|浮力|磁力
+mot|火箭向後噴氣而前進，利用？|作用力與反作用力|浮力|摩擦力|磁力
+mot|最大靜摩擦力與滑動摩擦力，通常哪個較大？|最大靜摩擦力|滑動摩擦力|一樣大|無法比較
+mot|接觸面愈粗糙，摩擦力？|愈大|愈小|不變|為零
+mot|摩擦力的大小與接觸面積？|無關|成正比|成反比|平方成正比
+mot|等速率圓周運動，速度的哪項在變？|方向|大小|質量|單位
+mot|跑一圈回到原點，位移為？|零|一圈長|半圈長|無法計算
+mot|36 km/h 等於幾 m/s？|10|36|3.6|100
+mot|平均速率的算法是？|總路程÷總時間|總時間÷總路程|總路程×總時間|總路程－總時間
+mot|等加速度運動，速度隨時間？|均勻增加|不變|隨機變化|先增後減
+mot|s-t 圖上，等速運動是？|斜直線|水平線|垂直線|圓弧
+mot|v-t 圖的斜率代表？|加速度|位移|速度|力
+mot|v-t 圖的面積代表？|位移|加速度|力|質量
+mot|滾動摩擦力通常比滑動摩擦力？|小|大|一樣|為零
+mot|太空人在太空站飄浮，質量？|不變|變為零|變大|變小
+mot|月球重力約為地球的？|六分之一|二分之一|三倍|六倍
+mot|彈簧伸長量與所受拉力成？|正比|反比|無關|平方反比
+mot|虎克定律描述的是？|彈簧的力與形變|光的折射|電流與電壓|熱的傳導
+mot|力的三要素是大小、方向和？|作用點|顏色|形狀|溫度
+mot|同一直線上兩力方向相反，合力大小為？|兩力相減|兩力相加|兩力相乘|兩力相除
+prs|1 大氣壓約等於幾公分水銀柱？|76|1|760|7.6
+prs|托里切利實驗測的是？|大氣壓力|水壓|電壓|浮力
+prs|越往高山，大氣壓力？|愈小|愈大|不變|變為零
+prs|水愈深，水壓？|愈大|愈小|不變|為零
+prs|同一深度，水中各方向的壓力？|相等|向下最大|向上最大|不一定
+prs|力不變，受力面積愈小，壓力？|愈大|愈小|不變|為零
+prs|圖釘尖端做得很尖，是為了？|增大壓力|減小壓力|省電|增加重量
+prs|帕斯卡原理常用在？|油壓千斤頂|溫度計|電燈|喇叭
+prs|帕斯卡原理說，密閉液體的壓力會？|各處等值傳遞|只向下傳|變為零|愈傳愈大
+prs|阿基米德原理：浮力等於？|排開液體的重量|物體的重量|物體的體積|液體的體積
+prs|物體完全沒入水中，浮力與什麼有關？|排開水的體積|沉入深度|物體形狀|物體顏色
+prs|物體在水中下沉時，浮力？|小於重力|等於重力|大於重力|為零
+prs|輪船能浮在水面是因為？|排開水的重量夠大|船很輕|水很鹹|船會游泳
+prs|物體完全沒入液體，液體密度愈大，浮力？|愈大|愈小|不變|為零
+prs|潛水艇要上浮，水艙要？|排出水|灌入水|關閉電源|增加重量
+prs|用吸管喝飲料主要利用？|大氣壓力|水壓|浮力|磁力
+prs|空氣會從氣壓高處流向？|氣壓低處|氣壓高處|不流動|向上
+prs|1 帕斯卡等於？|1 牛頓/平方公尺|1 牛頓/公尺|1 公斤/公尺|1 焦耳/秒
+prs|冰山浮在海面，是因為冰的密度？|比海水小|比海水大|等於海水|為零
+prs|鐵釘放入水中下沉，因為鐵的密度？|比水大|比水小|等於水|為零
+prs|氫氣球會上升，是因為？|浮力大於重力|重力為零|沒有空氣|浮力為零
+prs|熱氣球上升，是因為熱空氣密度？|較小|較大|一樣|為零
+prs|大氣壓力是由什麼造成的？|空氣的重量|地球自轉|太陽光|月球引力
+prs|馬德堡半球實驗證明？|大氣壓力的存在|水很重|真空不存在|重力消失
+prs|浮力的施力者是？|液體或氣體|物體本身|地球|磁鐵
+prs|吸盤能貼牆，是因為？|大氣壓力|磁力|浮力|摩擦電
+prs|水壓只與下列何者有關？|水的深度|容器形狀|容器顏色|水量多寡
+eng|1 焦耳等於？|1 牛頓·公尺|1 牛頓/公尺|1 公斤·公尺|1 瓦特·公尺
+eng|1 瓦特等於每秒做功？|1 焦耳|1 牛頓|1 公尺|1 公斤
+eng|功率代表？|做功的快慢|做功的多少|力的大小|能量的種類
+eng|提著重物水平走，對重物作功？|為零|最大|為負|無法判斷
+eng|推箱子沒推動，作功為？|零|很大|為負|不一定
+eng|力與位移垂直時，作功？|為零|最大|為負|等於力
+eng|動能的算法是？|½mv²|mv|mgh|Fs
+eng|重力位能的算法是？|mgh|½mv²|Fs|ma
+eng|速度加倍，動能變為？|4 倍|2 倍|不變|½ 倍
+eng|質量加倍，動能變為？|2 倍|4 倍|不變|½ 倍
+eng|單擺擺到最低點，哪種能最大？|動能|重力位能|熱能|化學能
+eng|單擺擺到最高點，動能？|最小|最大|不變|無法判斷
+eng|雲霄飛車從高處衝下，位能轉為？|動能|聲能|光能|核能
+eng|煞車時，車的動能主要變成？|熱能|位能|化學能|核能
+eng|太陽能板把光能轉成？|電能|聲能|機械能|核能
+eng|電燈泡主要把電能轉成光能和？|熱能|聲能|化學能|位能
+eng|電風扇主要把電能轉成？|動能|化學能|核能|光能
+eng|食物含有哪種能量？|化學能|核能|光能|聲能
+eng|水力發電利用水的？|位能|核能|化學能|光能
+eng|下列何者是再生能源？|太陽能|煤|石油|天然氣
+eng|下列何者是化石燃料？|石油|風能|水力|太陽能
+eng|槓桿平衡：力×力臂＝？|抗力×抗力臂|抗力＋抗力臂|抗力÷抗力臂|抗力
+eng|蹺蹺板屬於？|槓桿|斜面|滑輪|螺旋
+eng|理想動滑輪可以？|省一半力|改變力方向|省功|增加速度
+eng|使用任何簡單機械都？|不能省功|可以省功|一定費功|可以增加功
+eng|斜面愈長愈緩，推物所需的力？|愈小|愈大|不變|為零
+eng|機械效率不可能超過？|100%|50%|80%|10%
+eng|做功 100 焦耳用 10 秒，功率為？|10 瓦特|1000 瓦特|110 瓦特|90 瓦特
+eng|用 10 牛頓的力推 5 公尺，作功？|50 焦耳|2 焦耳|15 焦耳|5 焦耳
+snd|聲音是由物體的什麼產生的？|振動|摩擦|靜止|膨脹
+snd|聲音在空氣中的速率約為？|340 公尺/秒|34 公尺/秒|3400 公尺/秒|3×10⁸ 公尺/秒
+snd|空氣中的聲波屬於？|縱波|橫波|電磁波|光波
+snd|人耳可聽見的頻率約為？|20～20000 赫|1～10 赫|20～200 赫|2 萬～20 萬赫
+snd|高於人耳可聽頻率的聲波稱為？|超聲波|次聲波|電磁波|無線電波
+snd|蝙蝠辨位利用？|超聲波|次聲波|可見光|紅外線
+snd|聲納利用什麼測量海深？|聲波反射|光的折射|磁力|重力
+snd|回聲是聲音的什麼現象？|反射|折射|色散|吸收
+snd|要分辨出回聲，反射聲與原聲至少相隔約？|0.1 秒|0.001 秒|1 分鐘|10 秒
+snd|聲音的三要素是音量、音調和？|音色|音速|波長|週期
+snd|分辨小提琴與鋼琴靠？|音色|音量|音調|音速
+snd|弦愈短愈緊，音調愈？|高|低|不變|無聲
+snd|弦愈粗愈長，音調愈？|低|高|不變|無聲
+snd|敲擊力量愈大，增加的是？|音量|音調|音色|音速
+snd|音量的單位是？|分貝|赫茲|牛頓|瓦特
+snd|馬路旁種樹可減少噪音，是因為？|吸收阻隔聲音|增加回聲|提高音調|增加音量
+snd|太空中沒有空氣，所以聲音？|無法傳播|傳得更快|傳得更遠|變成光
+snd|先看到閃電後聽到雷聲，因為？|光速比聲速快|聲速比光速快|雷聲較小|閃電較亮
+snd|溫度愈高，空氣中的聲速？|愈快|愈慢|不變|為零
+snd|頻率愈高，音調？|愈高|愈低|不變|為零
+snd|1 秒振動 100 次，頻率為？|100 赫|1 赫|10 赫|0.01 赫
+snd|週期是振動一次所需的？|時間|距離|次數|力量
+snd|共鳴發生時，兩物體有相同的？|頻率|質量|顏色|體積
+snd|聲音傳播的是？|能量|物質|電子|光
+snd|同一聲音，在水中速率比在空氣中？|快|慢|相同|為零
+snd|隔音牆常用什麼材料？|吸音材料|玻璃|鏡子|金屬板
+lit|光在均勻介質中沿什麼路徑前進？|直線|曲線|圓形|折線
+lit|日食、月食可以用什麼解釋？|光的直線前進|光的折射|光的色散|光的干涉
+lit|日食時，擋住太陽的是？|月球|地球|火星|金星
+lit|月食時，月球進入誰的影子？|地球|太陽|火星|金星
+lit|光速約為？|3×10⁸ 公尺/秒|340 公尺/秒|3×10⁵ 公尺/秒|3×10³ 公尺/秒
+lit|太陽光到地球約需？|8 分鐘|8 秒|8 小時|8 天
+lit|入射角是入射光線與什麼的夾角？|法線|界面|反射線|鏡面
+lit|粗糙表面的反射稱為？|漫反射|規則反射|折射|色散
+lit|平面鏡成像，像與鏡面的距離和物？|相等|較遠|較近|無關
+lit|平面鏡所成的像，左右？|相反|相同|縮小|放大
+lit|凹面鏡可以？|會聚光線|發散光線|吸收光線|產生光線
+lit|汽車的後視鏡常用？|凸面鏡|凹面鏡|平面鏡|三稜鏡
+lit|手電筒的反射罩是？|凹面鏡|凸面鏡|平面鏡|凸透鏡
+lit|光由空氣斜射入水，折射角？|小於入射角|大於入射角|等於入射角|為零
+lit|筷子插入水中看起來彎折，是因為？|光的折射|光的反射|光的色散|光的直進
+lit|游泳池看起來比實際淺，是因為？|光的折射|光的反射|光的直進|光的吸收
+lit|物在凸透鏡焦點內側，成像為？|正立放大虛像|倒立實像|倒立縮小實像|無像
+lit|放大鏡是什麼透鏡？|凸透鏡|凹透鏡|平面鏡|三稜鏡
+lit|相機鏡頭是？|凸透鏡|凹透鏡|平面鏡|凹面鏡
+lit|遠視眼應配戴？|凸透鏡|凹透鏡|平面鏡|三稜鏡
+lit|近視眼的影像成在視網膜的？|前面|後面|正上方|旁邊
+lit|彩虹是光的什麼現象？|色散|反射|直進|干涉
+lit|紅色玻璃只讓什麼色光通過？|紅光|藍光|綠光|所有光
+lit|葉子呈綠色，是因為反射？|綠光|紅光|藍光|所有光
+lit|黑色物體會？|吸收大部分光|反射所有光|透射所有光|發出光
+lit|白色物體會？|反射所有色光|吸收所有色光|只反射紅光|透射色光
+lit|紅光加綠光成？|黃光|白光|藍光|紫光
+lit|三原色光相加成？|白光|黑色|黃光|紫光
+lit|眼睛中像底片的是？|視網膜|角膜|水晶體|虹膜
+lit|下列何者是光源？|太陽|月亮|鏡子|桌子
+lit|可見光中，波長最長的是？|紅光|紫光|綠光|藍光
+lit|可見光中，折射最大的是？|紫光|紅光|綠光|黃光
+ele|電流是什麼的流動？|電荷|質量|光|熱
+ele|電流的方向規定為？|正電荷流動方向|電子流動方向|任意方向|由負極出發
+ele|電流表要如何接入電路？|串聯|並聯|隨意|不接
+ele|電壓表要如何接入電路？|並聯|串聯|隨意|不接
+ele|電壓不變，電阻愈大，電流？|愈小|愈大|不變|為零
+ele|導線愈長，電阻？|愈大|愈小|不變|為零
+ele|導線愈粗，電阻？|愈小|愈大|不變|為零
+ele|串聯電路的總電阻？|各電阻相加|小於任一電阻|各電阻平均|為零
+ele|並聯電路的總電阻？|小於任一電阻|大於任一電阻|各電阻相加|為零
+ele|並聯電路的總電流等於？|各支路電流相加|各支路電流相同|最大支路電流|最小支路電流
+ele|串聯電路中一個燈泡燒壞，其他燈？|全部熄滅|仍然亮|變更亮|不受影響
+ele|家中電器通常採用什麼接法？|並聯|串聯|短路|斷路
+ele|發生短路時，電流會？|變得極大|變為零|不變|變小
+ele|電費的「度」等於？|千瓦小時|瓦特|焦耳|安培
+ele|1 千瓦的電器用 2 小時，耗電？|2 度|1 度|0.5 度|4 度
+ele|電熱器利用電流的什麼效應？|熱效應|磁效應|化學效應|光效應
+ele|電磁鐵利用電流的什麼效應？|磁效應|熱效應|化學效應|光效應
+ele|電磁鐵的線圈匝數愈多，磁力？|愈強|愈弱|不變|為零
+ele|磁鐵的磁力最強處在？|兩端|中間|各處相同|不存在
+ele|磁鐵外部，磁力線由？|N 極到 S 極|S 極到 N 極|N 極到 N 極|S 極到 S 極
+ele|指南針指北的一端是？|N 極|S 極|中間|兩端
+ele|地球本身像一個巨大的？|磁鐵|電池|電阻|導線
+ele|電動機把電能轉成？|動能|化學能|光能|核能
+ele|發電機把動能轉成？|電能|化學能|光能|熱能
+ele|變壓器可以改變？|交流電壓|直流電壓|電阻|頻率
+ele|台灣家用電是？|交流電|直流電|靜電|沒有電
+ele|乾電池提供的是？|直流電|交流電|靜電|磁力
+ele|同種電荷會？|互相排斥|互相吸引|沒有作用|互相抵消
+ele|閃電是一種？|放電現象|磁現象|化學反應|熱傳導
+ele|避雷針利用什麼原理？|尖端放電|電磁感應|電流熱效應|串聯
+ele|玻璃棒摩擦絲綢後帶？|正電|負電|不帶電|磁性
+ele|帶電體靠近輕小紙屑會？|吸引紙屑|排斥紙屑|沒有作用|吸引金屬
+ele|電池符號中，長線代表？|正極|負極|電阻|開關
+ele|開關在電路中的作用是？|控制通路與斷路|增加電壓|儲存電荷|降低電阻
+hea|溫度計測量的是物體的？|冷熱程度|熱量|能量|體積
+hea|攝氏溫標中，冰水混合物是？|0°C|100°C|37°C|-273°C
+hea|絕對零度約為？|-273°C|0°C|-100°C|-373°C
+hea|人體正常體溫約為？|37°C|25°C|45°C|60°C
+hea|下列何者導熱最好？|銅|木頭|空氣|塑膠
+hea|下列何者導熱最差？|空氣|銅|鋁|鐵
+hea|棉被保暖，是因為棉絮間含有？|空氣|水|金屬|真空
+hea|房間裡的熱空氣會？|上升|下沉|不動|消失
+hea|冷空氣會？|下沉|上升|不動|消失
+hea|煮水時，水的熱傳遞主要是？|對流|輻射|傳導|蒸發
+hea|太陽能熱水器利用？|輻射|摩擦|電磁感應|核反應
+hea|鍋子把手常用塑膠，因為塑膠？|導熱慢|導熱快|很重|很硬
+hea|黑色物體比白色物體吸收輻射熱？|較多|較少|一樣|不吸收
+hea|熱量與溫度？|是不同的量|是同一個量|熱量就是溫度|溫度就是熱量
+hea|1 卡約使 1 克的水升高？|1°C|10°C|100°C|0.1°C
+hea|水的比熱約為？|1 卡/克·°C|0.1 卡/克·°C|10 卡/克·°C|100 卡/克·°C
+hea|海邊白天比內陸涼，是因為水的？|比熱大|比熱小|密度小|沸點低
+hea|吸熱量 Q 的算法是？|質量×比熱×溫度變化|質量÷比熱|比熱＋溫度|質量×溫度
+hea|冰在融化過程中，溫度？|保持 0°C|持續上升|持續下降|變為 100°C
+hea|固態變液態稱為？|熔化|凝固|汽化|凝結
+hea|液態變氣態稱為？|汽化|液化|熔化|凝固
+hea|氣態變液態稱為？|凝結|汽化|熔化|昇華
+hea|固態直接變氣態稱為？|昇華|熔化|汽化|凝結
+hea|乾冰放在空氣中會？|昇華|熔化|凝固|凝結
+hea|水蒸發時會？|吸收熱量|放出熱量|不變|產生電
+hea|水蒸氣凝結成水時會？|放出熱量|吸收熱量|不變|產生光
+hea|濕衣服在哪裡比較快乾？|溫度高、通風處|溫度低處|無風潮濕處|冰箱裡
+hea|氣壓降低，水的沸點會？|降低|升高|不變|為零
+hea|高山上煮飯不易熟，因為水的沸點？|較低|較高|不變|為零
+hea|液體沸騰時，溫度？|保持不變|持續上升|持續下降|為零
+hea|熱脹冷縮最明顯的是？|氣體|固體|液體|一樣
+hea|鐵軌之間留縫隙，是因為？|熱脹冷縮|地震|重力|風
+hea|冷玻璃杯倒入熱水可能破裂，是因為？|受熱不均|太輕|太重|顏色
+atm|原子由原子核與什麼組成？|電子|分子|光子|離子
+atm|原子核由什麼組成？|質子和中子|電子和質子|電子和中子|光子
+atm|質量數等於？|質子數＋中子數|質子數－中子數|電子數|質子數
+atm|質子數相同、中子數不同的原子稱為？|同位素|同素異形體|離子|分子
+atm|原子失去電子後成為？|陽離子|陰離子|分子|中子
+atm|原子得到電子後成為？|陰離子|陽離子|分子|質子
+atm|提出原子說的科學家是？|道耳吞|愛因斯坦|牛頓|伽利略
+atm|從 α 粒子散射實驗發現原子核的是？|拉塞福|湯姆森|道耳吞|門得列夫
+atm|週期表的橫列稱為？|週期|族|系|區
+atm|週期表的直行稱為？|族|週期|列|帶
+atm|提出週期表的科學家是？|門得列夫|牛頓|愛因斯坦|拉瓦節
+atm|現代週期表依什麼排序？|原子序|原子量|密度|熔點
+atm|食鹽的化學式是？|NaCl|NaOH|KCl|Na₂O
+atm|氧氣的化學式是？|O₂|O|O₃|CO₂
+atm|氫氣的化學式是？|H₂|H|H₂O|HO
+atm|氨的化學式是？|NH₃|NO₂|N₂|NaOH
+atm|甲烷的化學式是？|CH₄|CO₂|C₂H₆|CO
+atm|鎂的元素符號是？|Mg|Mn|Hg|Na
+atm|鈣的元素符號是？|Ca|C|Cl|Cu
+atm|鉀的元素符號是？|K|P|Na|Ca
+atm|氯的元素符號是？|Cl|C|Ca|Co
+atm|銀的元素符號是？|Ag|Au|Al|Ar
+atm|汞（水銀）的元素符號是？|Hg|Ag|Mg|Hy
+atm|碳的元素符號是？|C|Ca|Co|Cu
+atm|鋁的元素符號是？|Al|Ag|Au|Ar
+atm|氮的元素符號是？|N|Na|Ne|Ni
+atm|硫的元素符號是？|S|Si|Sn|Se
+atm|金屬通常具有？|光澤且能導電|不導電|易碎|沒有光澤
+atm|地殼中含量最多的元素是？|氧|矽|鐵|鋁
+atm|宇宙中含量最多的元素是？|氫|氧|碳|氦
+atm|原子序 8 的元素是？|氧|氮|碳|氟
+atm|碳的原子序是？|6|12|8|1
+atm|1 個水分子含有？|2 個氫、1 個氧|1 個氫、2 個氧|2 個氫、2 個氧|1 個氫、1 個氧
+atm|1 個二氧化碳分子含幾個原子？|3|2|4|1
+atm|氦氣的特性是？|很輕且不易反應|很重|易燃|有顏色
+acb|酸性溶液含較多？|氫離子|氫氧根離子|鈉離子|氯離子
+acb|鹼性溶液含較多？|氫氧根離子|氫離子|氫原子|氧原子
+acb|pH 值愈小，酸性？|愈強|愈弱|不變|變成鹼性
+acb|pH 值由 7 往 14 愈大，鹼性？|愈強|愈弱|變成酸性|不變
+acb|pH 值等於 7 的溶液是？|中性|酸性|鹼性|強酸
+acb|石蕊試紙遇鹼，紅色試紙變？|藍色|紅色|黃色|黑色
+acb|酚酞遇酸性溶液？|維持無色|變紅色|變藍色|變黃色
+acb|廣用試紙是用來測？|pH 值|溫度|密度|電流
+acb|下列何者是酸？|鹽酸|氫氧化鈉|食鹽|酒精
+acb|下列何者是鹼？|氫氧化鈉|鹽酸|硫酸|醋酸
+acb|氫氧化鈉俗稱？|苛性鈉|小蘇打|石灰|食鹽
+acb|小蘇打水溶液呈？|弱鹼性|強酸性|中性|強鹼性
+acb|石灰水是？|鹼性|酸性|中性|不一定
+acb|汽水含有哪種酸？|碳酸|鹽酸|硫酸|硝酸
+acb|酸雨主要與哪種氣體有關？|二氧化硫|氧氣|氮氣|氫氣
+acb|酸雨的 pH 值小於約？|5.6|7|10|1
+acb|酸和活性金屬反應會產生？|氫氣|氧氣|氮氣|二氧化碳
+acb|酸和碳酸鈣反應會產生？|二氧化碳|氫氣|氧氣|氮氣
+acb|酸鹼中和反應會？|放出熱量|吸收熱量|不變|產生光
+acb|鹽酸與氫氧化鈉中和，生成食鹽和？|水|氫氣|氧氣|氨
+acb|胃藥是用來中和？|胃酸|胃液|膽汁|食物
+acb|被蚊子叮咬，可塗什麼緩解？|弱鹼性溶液|酸性溶液|食鹽水|酒精
+acb|土壤太酸，可加什麼改良？|石灰|硫酸|鹽酸|醋
+acb|下列何者呈酸性？|醋|肥皂水|石灰水|洗衣粉水
+acb|下列何者呈鹼性？|洗衣粉水|醋|檸檬汁|汽水
+acb|電解質的水溶液可以？|導電|不導電|產生沉澱|消失
+acb|濃硫酸沾到皮膚，應立刻？|大量沖水|用手擦|塗油|不處理
+acb|稀釋濃硫酸時，應？|把酸慢慢加入水|把水加入酸|同時倒入|先加熱
+acb|酸的水溶液能導電，是因為有？|離子|電子|質子|中子
+rxn|化學變化會產生？|新物質|相同物質|光|聲音
+rxn|冒出氣體或產生沉澱，通常表示？|化學變化|物理變化|沒有變化|狀態改變
+rxn|提出質量守恆定律的是？|拉瓦節|牛頓|愛因斯坦|道耳吞
+rxn|鎂帶燃燒後生成？|氧化鎂|氫氣|水|氯化鎂
+rxn|鐵生鏽是鐵與什麼反應？|氧氣和水|氮氣|二氧化碳|氫氣
+rxn|防止鐵生鏽可以？|鍍鋅或塗漆|多淋水|加鹽|放潮濕處
+rxn|滅火的原理之一是？|隔絕氧氣|增加氧氣|提高溫度|增加可燃物
+rxn|二氧化碳滅火器滅火，是因為？|隔絕氧氣|提供氧氣|提高溫度|增加燃料
+rxn|油鍋起火不可以？|澆水|蓋鍋蓋|關火|用滅火毯
+rxn|氧氣的特性是？|助燃|可燃|滅火|有顏色
+rxn|實驗室製氧常用什麼當催化劑？|二氧化錳|食鹽|糖|木炭
+rxn|催化劑能？|改變反應速率|增加生成物質量|被完全消耗|產生能量
+rxn|光合作用需要二氧化碳和？|水|氧氣|氮氣|氫氣
+rxn|光合作用會產生氧氣和？|葡萄糖|二氧化碳|水|蛋白質
+rxn|氫氣的特性是？|可燃且密度小|助燃|不可燃|有顏色
+rxn|物質與氧結合稱為？|氧化|還原|中和|蒸發
+rxn|溶液由溶質和什麼組成？|溶劑|溶解度|溶解熱|溶化
+rxn|糖水中的溶劑是？|水|糖|空氣|玻璃
+rxn|飽和溶液是指？|不能再溶解更多溶質|只含水|溶質很少|沒有溶質
+rxn|氣體的溶解度隨溫度升高？|變小|變大|不變|為零
+rxn|過濾可以分離？|液體中的不溶固體|互溶的液體|兩種氣體|兩種金屬
+rxn|蒸餾可以分離？|沸點不同的液體|不溶固體|兩種金屬|兩種氣體
+rxn|海水曬鹽是利用？|蒸發結晶|過濾|蒸餾|電解
+rxn|純物質有固定的？|熔點與沸點|顏色|形狀|大小
+rxn|空氣中氧氣約占？|21%|78%|1%|50%
+rxn|空氣中氮氣約占？|78%|21%|1%|50%
+rxn|臭氧層可以？|吸收紫外線|吸收紅外線|產生氧氣|增加溫度
+rxn|溫室效應主要與哪種氣體增加有關？|二氧化碳|氧氣|氮氣|氬氣
+rxn|PM2.5 指直徑小於多少的懸浮微粒？|2.5 微米|2.5 毫米|2.5 公分|2.5 公尺
+rxn|密度是物質的一種？|特性|形狀|大小|數量
+rxn|同一種物質，質量加倍，密度？|不變|變 2 倍|變一半|變為零
+rxn|50 克的物質體積 25 立方公分，密度為？|2 克/立方公分|0.5 克/立方公分|25 克/立方公分|75 克/立方公分
+rxn|水銀的密度比水？|大|小|一樣|為零
+`;
+var BANK=RAW.trim().split('\n').map(function(l){return l.split('|').map(function(x){return x.trim()})}).filter(function(a){return a.length===6}).map(function(a){return{u:a[0],q:a[1],a:a[2],w:a.slice(3)}});
+var DIFF={easy:{acc:0.55,mean:5.5,win:15,label:'簡單'},mid:{acc:0.75,mean:3.8,win:30,label:'普通'},hard:{acc:0.92,mean:2.4,win:50,label:'困難'}};
+var TITLES=['實驗學徒','實驗助手','小小科學家','實驗高手','理化達人','研究員','理化博士','理化大師'];
+var LS='lgk_prof_v1';
+
+function $(id){return document.getElementById(id)}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(a,r){for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function lvOf(xp){return Math.floor((1+Math.sqrt(1+xp/12.5))/2)}
+function xpAt(L){return 50*L*(L-1)}
+function titleOf(L){return TITLES[Math.min(TITLES.length-1,Math.floor((L-1)/2))]}
+function pointsFor(ms){return Math.round(50+100*Math.max(0,LIMIT-ms)/LIMIT)}
+/* ---------- avatar & shop catalog ---------- */
+var SLOTS=[['hat','帽子'],['face','臉部'],['body','身體'],['hand','手持']];
+var SHOP=[
+ {id:'hat_cap',slot:'hat',name:'棒球帽',price:30},
+ {id:'hat_hardhat',slot:'hat',name:'安全帽',price:40},
+ {id:'hat_party',slot:'hat',name:'派對帽',price:50},
+ {id:'hat_wizard',slot:'hat',name:'巫師帽',price:90},
+ {id:'hat_crown',slot:'hat',name:'皇冠',price:200},
+ {id:'face_mask',slot:'face',name:'口罩',price:20},
+ {id:'face_glasses',slot:'face',name:'圓框眼鏡',price:30},
+ {id:'face_mustache',slot:'face',name:'小鬍子',price:40},
+ {id:'face_shades',slot:'face',name:'墨鏡',price:60},
+ {id:'face_goggles',slot:'face',name:'護目鏡',price:70},
+ {id:'body_scarf',slot:'body',name:'紅圍巾',price:30},
+ {id:'body_tie',slot:'body',name:'領帶',price:40},
+ {id:'body_vest',slot:'body',name:'綠背心',price:50},
+ {id:'body_labcoat',slot:'body',name:'實驗袍',price:100},
+ {id:'body_cape',slot:'body',name:'披風',price:150},
+ {id:'hand_book',slot:'hand',name:'課本',price:30},
+ {id:'hand_flask',slot:'hand',name:'燒瓶',price:40},
+ {id:'hand_balloon',slot:'hand',name:'氣球',price:40},
+ {id:'hand_magnet',slot:'hand',name:'磁鐵',price:70},
+ {id:'hand_trophy',slot:'hand',name:'獎盃',price:180}
+];
+var SHOPMAP={};SHOP.forEach(function(x){SHOPMAP[x.id]=x});
+var ART={
+ hat_cap:'<path d="M36 31Q36 15 50 15Q64 15 64 31Z" fill="#e5484d"/><path d="M62 31L80 33" stroke="#e5484d" stroke-width="4.5" stroke-linecap="round"/><circle cx="50" cy="15.5" r="2" fill="#b91c1c"/>',
+ hat_hardhat:'<path d="M35 31Q35 12 50 12Q65 12 65 31Z" fill="#f5c518"/><rect x="30" y="29" width="40" height="5" rx="2.5" fill="#e0a800"/><path d="M50 12V29" stroke="#e0a800" stroke-width="3"/>',
+ hat_party:'<path d="M50 3L39 29H61Z" fill="#ff5ca8"/><circle cx="50" cy="4" r="3.5" fill="#ffd23f"/><circle cx="47" cy="20" r="2" fill="#ffd23f"/><circle cx="53" cy="14" r="2" fill="#7dd3fc"/><circle cx="52" cy="25" r="2" fill="#7dd3fc"/>',
+ hat_wizard:'<ellipse cx="50" cy="29" rx="23" ry="4.5" fill="#5b3fd0"/><path d="M38 29L53 2L63 29Z" fill="#6d4de0"/><circle cx="52" cy="19" r="2.5" fill="#ffd23f"/><path d="M38 26H63" stroke="#ffd23f" stroke-width="2.5"/>',
+ hat_crown:'<path d="M36 29V13L44 21L50 9L56 21L64 13V29Z" fill="#f2b705" stroke="#b8860b" stroke-width="1.5" stroke-linejoin="round"/><circle cx="50" cy="22" r="2.2" fill="#e5484d"/><circle cx="41" cy="25" r="1.6" fill="#38bdf8"/><circle cx="59" cy="25" r="1.6" fill="#38bdf8"/>',
+ face_mask:'<path d="M37 39H63L61 48Q50 52 39 48Z" fill="#bfe3ff" stroke="#5aa6e0" stroke-width="1.5" stroke-linejoin="round"/><path d="M37 41L34 38M63 41L66 38" stroke="#5aa6e0" stroke-width="1.5" fill="none"/>',
+ face_glasses:'<g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="44" cy="35" r="5.5"/><circle cx="56" cy="35" r="5.5"/><path d="M49.5 35H50.5M38.5 34L35 32M61.5 34L65 32"/></g>',
+ face_mustache:'<path d="M41 42Q45 37.5 50 41Q55 37.5 59 42Q55 45.5 50 43.5Q45 45.5 41 42Z" fill="#3b2a20"/>',
+ face_shades:'<path d="M37.5 32H49V38Q49 40.5 46 40.5H41Q37.5 40.5 37.5 38ZM51 32H62.5V38Q62.5 40.5 59 40.5H54Q51 40.5 51 38Z" fill="#111827"/><path d="M49 33.5H51M37.5 33L35 31.5M62.5 33L65 31.5" stroke="#111827" stroke-width="1.8" fill="none"/>',
+ face_goggles:'<path d="M35 35H65" stroke="#0f766e" stroke-width="3"/><circle cx="44" cy="35" r="6" fill="#5eead4" fill-opacity=".45" stroke="#0f766e" stroke-width="2"/><circle cx="56" cy="35" r="6" fill="#5eead4" fill-opacity=".45" stroke="#0f766e" stroke-width="2"/>',
+ body_scarf:'<path d="M39 52Q50 60 61 52V58Q50 66 39 58Z" fill="#e5484d"/><path d="M55 61L59 80L65 78L61 58Z" fill="#c92a2f"/>',
+ body_tie:'<path d="M50 54L46 59L50 63L54 59Z" fill="#2563eb"/><path d="M50 62L46.5 80L50 85L53.5 80Z" fill="#1d4ed8"/>',
+ body_vest:'<path d="M41 52H59L62 82H38Z" fill="#16a34a"/><path d="M50 54V82" stroke="#0f7a35" stroke-width="2"/><circle cx="46" cy="64" r="1.3" fill="#fff"/><circle cx="46" cy="72" r="1.3" fill="#fff"/>',
+ body_labcoat:'<path d="M41 52H59L66 90H34Z" fill="#fff" stroke="#94a3b8" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 56V90M44 52L50 62L56 52" stroke="#94a3b8" stroke-width="1.5" fill="none"/><rect x="53" y="74" width="6" height="7" rx="1" fill="none" stroke="#94a3b8"/>',
+ body_cape:'<path d="M42 54Q50 60 58 54V58Q50 64 42 58Z" fill="#5b21b6"/><circle cx="50" cy="58" r="2.2" fill="#ffd23f"/>',
+ hand_book:'<rect x="62" y="64" width="17" height="22" rx="2" fill="#2563eb" stroke="#1e3a8a" stroke-width="1.5"/><path d="M66 70H75M66 74H75M66 78H72" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>',
+ hand_flask:'<path d="M68.5 60H73.5V66L80 78Q81.5 81.5 78 81.5H64Q60.5 81.5 62 78L68.5 66Z" fill="#d1fae5" stroke="#0f766e" stroke-width="1.5" stroke-linejoin="round"/><path d="M65 74H77L80 78Q81.5 81.5 78 81.5H64Q60.5 81.5 62 78Z" fill="#22c55e"/>',
+ hand_balloon:'<path d="M69 72Q73 56 72 40" stroke="#94a3b8" stroke-width="1.2" fill="none"/><ellipse cx="72" cy="30" rx="8.5" ry="10.5" fill="#ef4444"/><path d="M70 39L72 42L74 39Z" fill="#ef4444"/><ellipse cx="69" cy="26" rx="2" ry="3" fill="#fff" fill-opacity=".45"/>',
+ hand_magnet:'<path d="M64 62V78Q64 88 72 88Q80 88 80 78V62" stroke="#dc2626" stroke-width="5.5" fill="none"/><path d="M64 62V67M80 62V67" stroke="#cbd5e1" stroke-width="5.5"/>',
+ hand_trophy:'<path d="M63 62H79L77 74Q71 80 65 74Z" fill="#f2b705" stroke="#b8860b" stroke-width="1.5" stroke-linejoin="round"/><path d="M63 64Q57 64 58.5 70Q60 73 65 72M79 64Q85 64 83.5 70Q82 73 77 72" fill="none" stroke="#b8860b" stroke-width="1.5"/><path d="M71 78V84" stroke="#b8860b" stroke-width="2.5"/><rect x="65" y="84" width="12" height="4" rx="1" fill="#b8860b"/>'
+};
+var ART_BACK={body_cape:'<path d="M42 54H58L77 106H23Z" fill="#7c3aed"/>'};
+function cleanEq(e){
+  var o={};e=e||{};
+  SLOTS.forEach(function(s){var id=e[s[0]];if(typeof id==='string'&&SHOPMAP[id]&&SHOPMAP[id].slot===s[0])o[s[0]]=id});
+  return o;
+}
+function avatarSVG(eq,mode){
+  eq=cleanEq(eq);
+  var coat=eq.body==='body_labcoat',s='';
+  s+='<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+(mode==='head'?'14 0 72 72':'0 0 100 120')+'" aria-hidden="true">';
+  if(eq.body&&ART_BACK[eq.body])s+=ART_BACK[eq.body];
+  s+='<g stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none"><path d="M50 50V86M50 86L36 116M50 86L64 116"/>';
+  if(!coat)s+='<path d="M50 58L32 76M50 58L69 72"/>';
+  s+='</g>';
+  if(coat)s+='<path d="M50 58L32 76M50 58L69 72" stroke="#94a3b8" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M50 58L32 76M50 58L69 72" stroke="#fff" stroke-width="4.6" stroke-linecap="round" fill="none"/>';
+  if(eq.body&&ART[eq.body])s+=ART[eq.body];
+  s+='<circle cx="50" cy="36" r="14" fill="var(--surface)" stroke="currentColor" stroke-width="4"/>';
+  s+='<circle cx="45" cy="35" r="1.8" fill="currentColor"/><circle cx="55" cy="35" r="1.8" fill="currentColor"/><path d="M44 41Q50 46 56 41" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  if(eq.face&&ART[eq.face])s+=ART[eq.face];
+  if(eq.hat&&ART[eq.hat])s+=ART[eq.hat];
+  if(eq.hand&&ART[eq.hand])s+=ART[eq.hand];
+  return s+'</svg>';
+}
+
+/* ---------- background scenes (inline SVG) ---------- */
+var SC_HEAD='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">';
+function scRnd(seed){var s=seed;return function(){s=(s*1664525+1013904223)%4294967296;return s/4294967296}}
+function scTri(x,y,w,h){return'M'+(x-w/2)+' '+y+'L'+x+' '+(y-h)+'L'+(x+w/2)+' '+y+'Z'}
+function scStars(n,seed,maxY){var r=scRnd(seed),d='';for(var i=0;i<n;i++)d+='M'+Math.round(r()*800)+' '+Math.round(r()*maxY)+'h0';return d}
+function scTrees(from,to,step,y,w,h,seed){var r=scRnd(seed),d='';for(var x=from;x<=to;x+=step){d+=scTri(Math.round(x+r()*20-10),y,w,Math.round(h*(0.8+r()*0.5)))}return d}
+function scBuildings(list,fill,win){
+  var s='';
+  list.forEach(function(b){s+='<rect x="'+b[0]+'" y="'+b[1]+'" width="'+b[2]+'" height="'+(560-b[1])+'" fill="'+fill+'"/>';if(win)s+='<rect x="'+b[0]+'" y="'+b[1]+'" width="'+b[2]+'" height="'+(560-b[1])+'" fill="url(#'+win+')"/>'});
+  return s;
+}
+var SCENES=[
+ {id:'lab',name:'實驗室',svg:SC_HEAD+
+  '<defs><linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3f4f3"/><stop offset="1" stop-color="#bfe0e4"/></linearGradient>'+
+  '<pattern id="pt" width="17" height="17" patternUnits="userSpaceOnUse"><rect x="1" y="1" width="15" height="15" rx="2" fill="#7cb4f0"/></pattern></defs>'+
+  '<rect width="800" height="600" fill="url(#w)"/>'+
+  '<path d="M0 150H800M0 300H800M200 0V470M400 0V470M600 0V470" stroke="#fff" stroke-opacity=".55" stroke-width="3"/>'+
+  '<rect x="520" y="70" width="230" height="190" rx="10" fill="#bfe6ff" stroke="#6b8794" stroke-width="10"/>'+
+  '<path d="M635 70V260M520 165H750" stroke="#6b8794" stroke-width="6"/><circle cx="700" cy="118" r="22" fill="#ffe08a"/>'+
+  '<ellipse cx="575" cy="120" rx="32" ry="12" fill="#fff"/><ellipse cx="595" cy="110" rx="20" ry="10" fill="#fff"/>'+
+  '<rect x="300" y="270" width="170" height="124" rx="6" fill="#fff" stroke="#6b8794" stroke-width="5"/>'+
+  '<rect x="312" y="282" width="136" height="68" fill="url(#pt)"/><rect x="312" y="282" width="34" height="68" fill="#f59e0b" fill-opacity=".5"/>'+
+  '<rect x="380" y="282" width="68" height="34" fill="#34d399" fill-opacity=".5"/><path d="M318 366H440M318 380H410" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>'+
+  '<rect x="50" y="212" width="370" height="12" rx="3" fill="#7b8f99"/>'+
+  '<path d="M90 122H110V152L132 212H68L90 152Z" fill="#fff" fill-opacity=".7" stroke="#5f7a88" stroke-width="4" stroke-linejoin="round"/>'+
+  '<path d="M80 182H120L132 212H68Z" fill="#34d399"/>'+
+  '<path d="M182 122H198V162Q222 172 218 197Q212 214 190 214Q168 214 162 197Q158 172 182 162Z" fill="#fff" fill-opacity=".7" stroke="#5f7a88" stroke-width="4" stroke-linejoin="round"/>'+
+  '<path d="M166 192Q190 182 214 192Q208 213 190 213Q172 213 166 192Z" fill="#60a5fa"/>'+
+  '<g stroke="#5f7a88" stroke-width="4" fill="#fff" fill-opacity=".7"><path d="M250 142V200Q250 212 259 212Q268 212 268 200V142Z"/><path d="M285 142V200Q285 212 294 212Q303 212 303 200V142Z"/><path d="M320 142V200Q320 212 329 212Q338 212 338 200V142Z"/></g>'+
+  '<path d="M252 172V200Q252 210 259 210Q266 210 266 200V172Z" fill="#fb923c"/><path d="M287 162V200Q287 210 294 210Q301 210 301 200V162Z" fill="#a78bfa"/><path d="M322 180V200Q322 210 329 210Q336 210 336 200V180Z" fill="#f472b6"/>'+
+  '<rect y="470" width="800" height="130" fill="#6f8896"/><rect y="470" width="800" height="18" fill="#9ab0bb"/>'+
+  '<path d="M95 380H165V455Q165 470 150 470H110Q95 470 95 455Z" fill="#fff" fill-opacity=".7" stroke="#5f7a88" stroke-width="4"/>'+
+  '<path d="M97 418H163V455Q163 468 150 468H110Q97 468 97 455Z" fill="#fbbf24"/><circle cx="120" cy="436" r="5" fill="#fff" fill-opacity=".7"/><circle cx="140" cy="448" r="4" fill="#fff" fill-opacity=".7"/>'+
+  '<rect x="560" y="448" width="90" height="22" rx="6" fill="#334155"/><path d="M590 448V392Q590 352 630 352" stroke="#475569" stroke-width="14" fill="none" stroke-linecap="round"/>'+
+  '<rect x="616" y="336" width="22" height="56" rx="5" fill="#64748b" transform="rotate(-20 627 364)"/><rect x="600" y="424" width="60" height="8" rx="3" fill="#94a3b8"/>'+
+  '<path d="M300 470V430H400V470" fill="#fff" fill-opacity=".6" stroke="#5f7a88" stroke-width="4"/><circle cx="350" cy="450" r="9" fill="#ef4444"/>'+
+  '</svg>'},
+ {id:'mountain',name:'山景',svg:SC_HEAD+
+  '<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78bdf0"/><stop offset=".72" stop-color="#ffe4bb"/></linearGradient></defs>'+
+  '<rect width="800" height="600" fill="url(#s)"/><circle cx="620" cy="170" r="48" fill="#fff3c4"/>'+
+  '<ellipse cx="160" cy="120" rx="60" ry="16" fill="#fff" fill-opacity=".85"/><ellipse cx="205" cy="104" rx="38" ry="14" fill="#fff" fill-opacity=".85"/><ellipse cx="470" cy="80" rx="50" ry="12" fill="#fff" fill-opacity=".8"/>'+
+  '<path d="M-20 430L170 190L290 340L400 230L560 440Z" fill="#8aa7c7"/><path d="M170 190L198 230L182 224L168 240L154 224L142 230Z" fill="#fff"/>'+
+  '<path d="M300 450L520 200L800 480V600H300Z" fill="#5f84ac"/><path d="M520 200L549 240L533 234L520 252L506 234L491 240Z" fill="#fff"/>'+
+  '<path d="M0 600V480Q200 410 400 480T800 460V600Z" fill="#4f9d69"/>'+
+  '<ellipse cx="580" cy="545" rx="170" ry="26" fill="#8fd2f0"/><ellipse cx="560" cy="540" rx="80" ry="6" fill="#fff" fill-opacity=".4"/>'+
+  '<path d="M0 600V530Q250 480 520 540T800 520V600Z" fill="#3b8657"/>'+
+  '<path d="'+scTrees(40,420,55,545,34,78,7)+'" fill="#1f5f45"/><path d="'+scTrees(700,780,40,560,40,92,3)+'" fill="#1b563f"/>'+
+  '<path d="M80 600L120 520L160 600Z" fill="#c2410c" fill-opacity="0"/>'+
+  '</svg>'},
+ {id:'sea',name:'海邊',svg:SC_HEAD+
+  '<defs><linearGradient id="k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fcdf7"/><stop offset="1" stop-color="#e9f7ff"/></linearGradient>'+
+  '<linearGradient id="o" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2eb1db"/><stop offset="1" stop-color="#0b6aa6"/></linearGradient></defs>'+
+  '<rect width="800" height="600" fill="url(#k)"/><circle cx="630" cy="150" r="44" fill="#ffe27a"/>'+
+  '<ellipse cx="170" cy="130" rx="64" ry="16" fill="#fff"/><ellipse cx="215" cy="114" rx="38" ry="14" fill="#fff"/><ellipse cx="440" cy="90" rx="48" ry="12" fill="#fff" fill-opacity=".85"/>'+
+  '<rect y="330" width="800" height="270" fill="url(#o)"/>'+
+  '<path d="M520 332Q570 292 625 332Z" fill="#3f8a5a"/>'+
+  '<path d="M0 385Q50 370 100 385T200 385T300 385T400 385T500 385T600 385T700 385T800 385M0 440Q60 424 120 440T240 440T360 440T480 440T600 440T720 440T840 440M0 500Q70 482 140 500T280 500T420 500T560 500T700 500T840 500" stroke="#fff" stroke-opacity=".5" stroke-width="5" fill="none"/>'+
+  '<path d="M290 350H380L364 376H306Z" fill="#b45309"/><path d="M335 346V268" stroke="#6b4423" stroke-width="4"/><path d="M338 272L386 344H338Z" fill="#fff"/><path d="M331 288L296 344H331Z" fill="#fde68a"/>'+
+  '<path d="M0 600V545Q200 520 400 548T800 530V600Z" fill="#f3d9a0"/>'+
+  '<path d="M90 560Q85 480 130 400" stroke="#8b5a2b" stroke-width="14" fill="none" stroke-linecap="round"/>'+
+  '<path d="M130 400Q80 380 50 410Q95 395 130 400ZM130 400Q150 350 200 350Q165 372 130 400ZM130 400Q110 345 60 340Q100 365 130 400ZM130 400Q190 395 215 430Q170 410 130 400Z" fill="#2f9a56"/>'+
+  '<circle cx="560" cy="570" r="8" fill="#f9a8d4"/><circle cx="600" cy="560" r="6" fill="#fde68a"/>'+
+  '</svg>'},
+ {id:'city',name:'城市夜景',svg:SC_HEAD+
+  '<defs><linearGradient id="n" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1230"/><stop offset="1" stop-color="#3d4399"/></linearGradient>'+
+  '<pattern id="w1" width="22" height="28" patternUnits="userSpaceOnUse"><rect x="6" y="7" width="9" height="13" fill="#ffd96b"/></pattern>'+
+  '<pattern id="w2" width="26" height="30" patternUnits="userSpaceOnUse"><rect x="8" y="8" width="9" height="12" fill="#8fb4ff" fill-opacity=".8"/></pattern></defs>'+
+  '<rect width="800" height="600" fill="url(#n)"/><path d="'+scStars(38,11,260)+'" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-opacity=".8"/>'+
+  '<circle cx="640" cy="120" r="38" fill="#fff6cf"/><circle cx="628" cy="108" r="7" fill="#efe3b0"/><circle cx="652" cy="132" r="5" fill="#efe3b0"/>'+
+  scBuildings([[0,340,90],[90,300,70],[160,360,100],[260,320,80],[340,380,70],[410,310,100],[510,350,80],[590,290,90],[680,340,120]],'#2a3270','w2')+
+  scBuildings([[20,400,110],[130,430,80],[210,380,120],[330,440,90],[420,400,100],[520,430,110],[630,390,90],[720,420,80]],'#171d4a','w1')+
+  '<path d="M255 380V350M255 350L250 342M255 350L260 342" stroke="#171d4a" stroke-width="3"/>'+
+  '<rect y="560" width="800" height="40" fill="#0f1438"/><path d="M0 580H800" stroke="#ffd96b" stroke-width="4" stroke-dasharray="40 30"/>'+
+  '<rect x="300" y="540" width="70" height="20" rx="8" fill="#ef4444"/><rect x="315" y="530" width="38" height="14" rx="5" fill="#fca5a5"/><circle cx="318" cy="562" r="6" fill="#111"/><circle cx="352" cy="562" r="6" fill="#111"/>'+
+  '</svg>'},
+ {id:'space',name:'太空',svg:SC_HEAD+
+  '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#050816"/><stop offset="1" stop-color="#2a1b6b"/></linearGradient>'+
+  '<linearGradient id="p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#b45309"/></linearGradient>'+
+  '<linearGradient id="c" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>'+
+  '<rect width="800" height="600" fill="url(#g)"/>'+
+  '<path d="'+scStars(70,5,600)+'" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-opacity=".85"/><path d="'+scStars(60,9,600)+'" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-opacity=".35"/>'+
+  '<path d="M100 120L420 60" stroke="url(#c)" stroke-width="4" stroke-linecap="round"/><circle cx="424" cy="59" r="6" fill="#fff"/>'+
+  '<ellipse cx="570" cy="230" rx="165" ry="36" fill="none" stroke="#fcd34d" stroke-opacity=".55" stroke-width="12" transform="rotate(-18 570 230)"/>'+
+  '<circle cx="570" cy="230" r="92" fill="url(#p)"/><path d="M485 205Q570 190 655 205M480 240Q570 226 660 240M492 272Q570 262 648 272" stroke="#92400e" stroke-opacity=".35" stroke-width="9" fill="none"/>'+
+  '<path d="M405 235Q490 255 735 215" stroke="#fcd34d" stroke-width="12" fill="none" transform="rotate(-18 570 230) translate(0 0)" stroke-opacity="0"/>'+
+  '<circle cx="150" cy="430" r="52" fill="#38bdf8"/><path d="M120 420Q140 400 165 412Q150 440 125 445ZM170 450Q190 440 197 460Q180 475 168 465Z" fill="#22c55e"/><circle cx="130" cy="400" r="20" fill="#fff" fill-opacity=".18"/>'+
+  '<circle cx="300" cy="170" r="17" fill="#cbd5e1"/><circle cx="294" cy="164" r="4" fill="#94a3b8"/><circle cx="308" cy="176" r="3" fill="#94a3b8"/>'+
+  '<g transform="rotate(35 400 480)"><path d="M385 520Q400 430 415 520Z" fill="#f1f5f9"/><path d="M385 520L375 545L392 530ZM415 520L425 545L408 530Z" fill="#ef4444"/><circle cx="400" cy="495" r="7" fill="#38bdf8"/><path d="M392 532Q400 560 408 532Z" fill="#fbbf24"/></g>'+
+  '</svg>'},
+ {id:'forest',name:'森林',svg:SC_HEAD+
+  '<defs><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe8c9"/><stop offset="1" stop-color="#f7f8d6"/></linearGradient></defs>'+
+  '<rect width="800" height="600" fill="url(#f)"/><circle cx="400" cy="140" r="70" fill="#fff8b8" fill-opacity=".85"/><circle cx="400" cy="140" r="42" fill="#fff3a0"/>'+
+  '<path d="M400 140L250 600M400 140L330 600M400 140L470 600M400 140L560 600" stroke="#fff" stroke-opacity=".18" stroke-width="30"/>'+
+  '<path d="'+scTrees(0,800,46,400,70,170,2)+'" fill="#8cc79a"/>'+
+  '<path d="'+scTrees(20,800,62,470,100,230,4)+'" fill="#52a56e"/>'+
+  '<path d="M0 600V490Q200 450 400 495T800 480V600Z" fill="#3a8a55"/>'+
+  '<path d="M290 600Q340 540 420 520Q520 505 560 600Z" fill="#8fd6ea"/><path d="M360 570Q420 545 480 560" stroke="#fff" stroke-opacity=".55" stroke-width="4" fill="none"/>'+
+  '<path d="'+scTrees(30,200,80,600,120,300,6)+'" fill="#2b7549"/><path d="'+scTrees(640,800,80,600,120,320,8)+'" fill="#27693f"/>'+
+  '<rect x="108" y="560" width="14" height="40" fill="#6b4423"/><rect x="688" y="560" width="14" height="40" fill="#6b4423"/>'+
+  '<path d="M228 575Q228 548 252 548Q276 548 276 575Z" fill="#ef4444"/><rect x="246" y="575" width="12" height="18" rx="3" fill="#fff3d6"/><circle cx="244" cy="562" r="4" fill="#fff"/><circle cx="262" cy="558" r="3" fill="#fff"/>'+
+  '<circle cx="560" cy="580" r="5" fill="#fde047"/><circle cx="585" cy="590" r="5" fill="#f9a8d4"/><circle cx="610" cy="578" r="5" fill="#fff"/>'+
+  '</svg>'}
+];
+var SCENE_BY_ID={};SCENES.forEach(function(s){SCENE_BY_ID[s.id]=s});
+
+var RK='lgk_recent_v1';
+function recentSet(){var o={};try{JSON.parse(localStorage.getItem(RK)||'[]').forEach(function(q){o[q]=1})}catch(e){}return o}
+function noteSeen(set){try{var a=JSON.parse(localStorage.getItem(RK)||'[]');set.forEach(function(x){var k=a.indexOf(x.q);if(k>=0)a.splice(k,1);a.push(x.q)});localStorage.setItem(RK,JSON.stringify(a.slice(-150)))}catch(e){}}
+function buildSet(seed,units,avoid){
+  var ok={};(units&&units.length?units:allUnits()).forEach(function(u){ok[u]=1});
+  var rnd=mulberry32(seed),idx=[];
+  BANK.forEach(function(b,i){if(ok[b.u])idx.push(i)});
+  shuffle(idx,rnd);
+  if(avoid){var rc=recentSet();idx=idx.filter(function(i){return!rc[BANK[i].q]}).concat(idx.filter(function(i){return rc[BANK[i].q]}))}
+  return idx.slice(0,NQ).map(function(i){var b=BANK[i],opts=b.w.concat([b.a]);shuffle(opts,rnd);return{q:b.q,u:b.u,opts:opts,ans:opts.indexOf(b.a)}});
+}
+
+/* ---------- server bridge ---------- */
+function gs(fn){
+  var a=[].slice.call(arguments,1);
+  return new Promise(function(res,rej){
+    if(!window.google||!google.script||!google.script.run){rej(new Error('no-gas'));return}
+    google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(e)})[fn].apply(google.script.run,a);
+  });
+}
+function noop(){}
+
+/* ---------- profile ---------- */
+var LS='lgk_prof_v1';
+var online=false,authErr=false,saveFail=false,lb=[];
+function num(v){v=+v;return isFinite(v)&&v>0?Math.min(Math.floor(v),1e7):0}
+function clean(o){
+  o=o||{};
+  var own=[];
+  (Array.isArray(o.owned)?o.owned:[]).forEach(function(id){if(typeof id==='string'&&SHOPMAP[id]&&own.indexOf(id)<0)own.push(id)});
+  var eq=cleanEq(o.equip);
+  Object.keys(eq).forEach(function(k){if(own.indexOf(eq[k])<0)delete eq[k]});
+  return{nick:String(o.nick||'').slice(0,10),xp:num(o.xp),games:num(o.games),wins:num(o.wins),best:num(o.best),coins:num(o.coins),owned:own,equip:eq};
+}
+var profile=clean({});
+function nick(){return profile.nick||(online?'玩家':'訪客')}
+function loadLocal(){try{var s=localStorage.getItem(LS);if(s)profile=clean(JSON.parse(s))}catch(e){}}
+function persistLocal(){try{localStorage.setItem(LS,JSON.stringify(profile))}catch(e){}}
+function localShop(fn,a,b){
+  if(fn==='buyItem'){
+    var it=SHOPMAP[a];
+    if(!it)return{ok:false,err:'unknown'};
+    if(profile.owned.indexOf(a)>=0)return{ok:false,err:'owned'};
+    if(profile.coins<it.price)return{ok:false,err:'coins'};
+    profile.coins-=it.price;profile.owned.push(a);profile.equip[it.slot]=a;
+  }else if(b){
+    var i2=SHOPMAP[b];
+    if(!i2||i2.slot!==a||profile.owned.indexOf(b)<0)return{ok:false,err:'unknown'};
+    profile.equip[a]=b;
+  }else{delete profile.equip[a]}
+  persistLocal();
+  return{ok:true,profile:profile};
+}
+function renderProfile(){
+  var L=lvOf(profile.xp),a=xpAt(L),b=xpAt(L+1),n=nick();
+  $('chip-name').textContent=n;$('chip-lv').textContent='Lv.'+L;$('chip-coin').textContent=profile.coins;
+  $('chip-av').innerHTML=avatarSVG(profile.equip,'head');
+  $('p-av').innerHTML=avatarSVG(profile.equip,'full');
+  $('p-title').textContent='Lv.'+L+' '+titleOf(L);
+  $('p-xp').textContent=profile.xp+' 經驗值，再 '+(b-profile.xp)+' 升級';
+  $('p-coin').textContent=profile.coins;
+  $('p-bar').style.width=Math.round(100*(profile.xp-a)/(b-a))+'%';
+  $('p-games').textContent=profile.games;$('p-wins').textContent=profile.wins;$('p-best').textContent=profile.best;
+  var inp=$('p-nick');if(document.activeElement!==inp)inp.value=profile.nick;
+  var t;
+  if(online&&saveFail)t='剛剛的成績沒有儲存成功，請稍後再試。';
+  else if(online)t='已用學校帳號登入：成績、金幣和裝扮會自動儲存。';
+  else if(authErr)t='無法取得學校 Google 帳號。請用學校帳號登入，並從老師提供的網址開啟。';
+  else t='目前連不上伺服器，成績只存在這台裝置。請從老師提供的網址開啟。';
+  $('p-acct').textContent=t;
+}
+function renderLB(){
+  var ol=$('lb'),note=$('lb-note');ol.textContent='';
+  if(!online){note.textContent='連上伺服器後才會顯示全班排行榜。';return}
+  if(!lb.length){note.textContent='還沒有人上榜，打完一場就會出現。';return}
+  note.textContent='';
+  lb.forEach(function(p,i){
+    var li=document.createElement('li');if(p.me)li.className='me';
+    var r=document.createElement('span');r.className='rk';r.textContent=i+1;
+    var av=document.createElement('span');av.className='av xs';av.innerHTML=avatarSVG(p.av,'head');
+    var n=document.createElement('span');n.className='nm';n.textContent=p.nick||'玩家';
+    var l=document.createElement('span');l.className='lv';l.textContent='Lv.'+lvOf(num(p.xp));
+    var x=document.createElement('span');x.className='xp';x.textContent=num(p.xp);
+    li.append(r,av,n,l,x);ol.appendChild(li);
+  });
+}
+
+/* ---------- ui helpers ---------- */
+var screens=['home','lobby','game','result','shop'],tT=0;
+function show(n){screens.forEach(function(s){$('s-'+s).hidden=s!==n});window.scrollTo(0,0);applyBg(n)}
+function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(tT);tT=setTimeout(function(){e.classList.remove('on')},3200)}
+function curScreen(){for(var i=0;i<screens.length;i++)if(!$('s-'+screens[i]).hidden)return screens[i]}
+
+/* ---------- units, background, shop ---------- */
+var UNITS=[['mot','力與運動'],['prs','壓力與浮力'],['eng','功與能'],['snd','聲音'],['lit','光學'],['ele','電與磁'],['hea','熱與溫度'],['atm','原子與元素'],['acb','酸鹼'],['rxn','物質與變化']];
+var UNIT_NAME={};UNITS.forEach(function(u){UNIT_NAME[u[0]]=u[1]});
+var selU=null,bgPick='auto',curBg='',gameScene='lab',shopTab='hat',pend='';
+var AI_AV={easy:{},mid:{face:'face_goggles',body:'body_labcoat'},hard:{hat:'hat_crown',body:'body_cape',hand:'hand_trophy'}};
+var ERRS={coins:'金幣不足',owned:'你已經買過了',unknown:'找不到這個商品',noemail:'無法取得學校帳號'};
+function el(t,c,tx){var e=document.createElement(t);if(c)e.className=c;if(tx!=null)e.textContent=tx;return e}
+function allUnits(){return UNITS.map(function(u){return u[0]})}
+function cleanUnits(arr){var a=allUnits().filter(function(u){return Array.isArray(arr)&&arr.indexOf(u)>=0});return a.length?a:allUnits()}
+function selUnits(){return cleanUnits(selU)}
+function rangeText(us){return us.length>=UNITS.length?'範圍：全部單元':'範圍：'+us.map(function(u){return UNIT_NAME[u]}).join('、')}
+function unitCount(u){var n=0;BANK.forEach(function(b){if(b.u===u)n++});return n}
+function loadPrefs(){
+  try{var a=JSON.parse(localStorage.getItem('lgk_units')||'null');if(Array.isArray(a))selU=cleanUnits(a)}catch(e){}
+  if(!selU)selU=allUnits();
+  try{var b=localStorage.getItem('lgk_bg');if(b&&(b==='auto'||SCENE_BY_ID[b]))bgPick=b}catch(e){}
+}
+function savePrefs(){try{localStorage.setItem('lgk_units',JSON.stringify(selU));localStorage.setItem('lgk_bg',bgPick)}catch(e){}}
+function renderRange(){
+  var box=$('rg-chips'),cur=selUnits(),all=cur.length===UNITS.length,total=0;
+  box.textContent='';
+  var a=el('button','chip2','全部單元');a.type='button';a.dataset.u='*';a.setAttribute('aria-pressed',all?'true':'false');box.appendChild(a);
+  UNITS.forEach(function(u){
+    var on=cur.indexOf(u[0])>=0,c=unitCount(u[0]);if(on)total+=c;
+    var b=el('button','chip2',u[1]);b.type='button';b.dataset.u=u[0];b.setAttribute('aria-pressed',on?'true':'false');
+    b.appendChild(el('small','',String(c)));box.appendChild(b);
+  });
+  $('rg-count').textContent='共 '+total+' 題';
+}
+function applyBg(n){
+  var id=(bgPick!=='auto'&&SCENE_BY_ID[bgPick])?bgPick:((n==='game'||n==='result')?gameScene:'lab');
+  if(id===curBg)return;
+  curBg=id;$('bg').style.backgroundImage='url("data:image/svg+xml,'+encodeURIComponent(SCENE_BY_ID[id].svg)+'")';
+}
+function pickGameScene(){
+  var ids=SCENES.map(function(s){return s.id}).filter(function(i){return i!==gameScene&&i!=='lab'});
+  gameScene=ids[Math.floor(Math.random()*ids.length)];
+}
+function renderBgPick(){
+  var box=$('bg-pick');box.textContent='';
+  [{id:'auto',name:'自動'}].concat(SCENES).forEach(function(s){
+    var b=el('button','sc');b.type='button';b.dataset.s=s.id;b.setAttribute('aria-pressed',bgPick===s.id?'true':'false');b.setAttribute('aria-label',s.name);
+    if(s.id!=='auto')b.style.backgroundImage='url("data:image/svg+xml,'+encodeURIComponent(s.svg)+'")';
+    b.appendChild(el('span','scn',s.name));box.appendChild(b);
+  });
+}
+function renderShop(){
+  $('sh-av').innerHTML=avatarSVG(profile.equip,'full');$('sh-coin').textContent=profile.coins;
+  document.querySelectorAll('#sh-tabs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.s===shopTab?'true':'false')});
+  var box=$('sh-items');box.textContent='';
+  SHOP.filter(function(x){return x.slot===shopTab}).forEach(function(it){
+    var owned=profile.owned.indexOf(it.id)>=0,on=profile.equip[it.slot]===it.id;
+    var d=el('div','item'+(on?' on':'')),pv={};pv[it.slot]=it.id;
+    var av=el('span','av it');av.innerHTML=avatarSVG(pv,'full');
+    var btn=el('button','btn');btn.type='button';
+    if(on)btn.textContent='脫下';
+    else if(owned){btn.textContent='穿上';btn.classList.add('primary')}
+    else if(pend===it.id){btn.textContent='確定購買';btn.classList.add('primary')}
+    else{btn.textContent=it.price+' 金幣';btn.disabled=profile.coins<it.price}
+    btn.addEventListener('click',function(){shopAct(it)});
+    var st=on?'穿戴中':owned?'已擁有':(profile.coins<it.price?'還差 '+(it.price-profile.coins)+' 金幣':'');
+    d.append(av,el('div','nm',it.name),el('div','note',st||' '),btn);box.appendChild(d);
+  });
+}
+async function shopAct(it){
+  var owned=profile.owned.indexOf(it.id)>=0,on=profile.equip[it.slot]===it.id,r,bought=false;
+  try{
+    if(owned||on){
+      r=online?await gs('equipItem',it.slot,on?'':it.id):localShop('equip',it.slot,on?'':it.id);
+    }else{
+      if(pend!==it.id){pend=it.id;renderShop();return}
+      pend='';bought=true;
+      r=online?await gs('buyItem',it.id):localShop('buyItem',it.id);
+    }
+  }catch(e){toast('連線失敗，請再試一次');return}
+  if(r&&r.ok){profile=clean(r.profile);if(r.board)lb=r.board;if(bought)toast('已購買「'+it.name+'」並穿上')}
+  else toast(ERRS[r&&r.err]||'操作失敗，請再試一次');
+  renderProfile();renderShop();renderLB();
+}
+
+/* ---------- game ---------- */
+var G=null,net=null,diff='mid';
+function later(fn,ms){var g=G;var id=setTimeout(function(){if(G===g)fn()},ms);if(g)g.timers.push(id);return id}
+function setStat(who,t,cls){var e=$(who==='me'?'g-me-st':'g-op-st');e.textContent=t;e.className='st'+(cls?' '+cls:'')}
+function updateScore(){
+  var a=$('g-me-score'),b=$('g-op-score');
+  if(a.textContent!==String(G.me)){a.textContent=G.me;a.classList.remove('bump');void a.offsetWidth;a.classList.add('bump')}
+  if(b.textContent!==String(G.opp)){b.textContent=G.opp;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}
+}
+function startGame(kind,o){
+  var seed=o.seed!=null?o.seed:Math.floor(Math.random()*2147483647);
+  G={kind:kind,set:buildSet(seed,o.units,kind==='ai'),units:cleanUnits(o.units),oppAv:cleanEq(o.oppAv),i:-1,me:0,opp:0,correct:0,myAns:[],oppAns:[],rev:[],locked:true,done:false,
+     oppName:o.oppName,oppLv:o.oppLv||1,diff:o.diff,oppLeft:false,raf:0,timers:[],oppShown:false,ai:null,t0:0};
+  var L=lvOf(profile.xp);
+  $('g-me-name').textContent=nick();$('g-me-lv').textContent='Lv.'+L;
+  $('g-op-name').textContent=G.oppName;$('g-me-av').innerHTML=avatarSVG(profile.equip,'head');$('g-op-av').innerHTML=avatarSVG(G.oppAv,'head');$('g-range').textContent=rangeText(G.units);pickGameScene();$('g-op-lv').textContent=kind==='ai'?DIFF[G.diff].label:'Lv.'+G.oppLv;
+  $('g-me-score').textContent='0';$('g-op-score').textContent='0';setStat('me','');setStat('op','');
+  $('g-opts').textContent='';$('g-q').textContent='準備好了嗎？';$('g-tag').textContent='';$('g-qn').textContent='0/'+NQ;$('g-tm').textContent=(LIMIT/1000).toFixed(1);
+  $('g-bar').style.transform='scaleX(1)';$('g-quit').textContent='退出';
+  show('game');
+  var c=$('g-count'),n=3;c.hidden=false;c.textContent=n;
+  (function step(){later(function(){n--;if(n>0){c.textContent=n;step()}else{c.hidden=true;nextQ()}},800)})();
+}
+function nextQ(){
+  var g=G;g.i++;
+  if(g.i>=NQ){finish();return}
+  var q=g.set[g.i],idx=g.i;
+  $('g-qn').textContent=(g.i+1)+'/'+NQ;$('g-q').textContent=q.q;$('g-tag').textContent=UNIT_NAME[q.u]||'';setStat('me','');setStat('op','思考中…');g.oppShown=false;
+  var box=$('g-opts');box.textContent='';
+  q.opts.forEach(function(t,i){
+    var b=document.createElement('button');b.type='button';b.className='opt';b.dataset.i=i;
+    var k=document.createElement('span');k.className='k';k.textContent='ABCD'[i];
+    var s=document.createElement('span');s.textContent=t;b.append(k,s);
+    b.addEventListener('click',function(){answer(i)});box.appendChild(b);
+  });
+  g.locked=false;g.t0=performance.now();tick();
+  if(g.kind==='ai'){
+    var d=DIFF[g.diff],ok=Math.random()<d.acc,ms=Math.max(900,Math.min(LIMIT-300,d.mean*1000*(0.6+Math.random()*0.8)));
+    g.ai={ok:ok,ms:ms};
+    later(function(){if(g.i===idx&&!g.oppShown)setStat('op','已作答')},ms);
+  }else if(g.oppAns[idx]){setStat('op','已作答')}
+}
+function tick(){
+  var g=G;cancelAnimationFrame(g.raf);
+  var bar=$('g-bar'),tm=$('g-tm');
+  (function step(){
+    if(G!==g||g.locked)return;
+    var left=Math.max(0,LIMIT-(performance.now()-g.t0));
+    bar.style.transform='scaleX('+(left/LIMIT)+')';tm.textContent=(left/1000).toFixed(1);bar.classList.toggle('low',left<2500);
+    if(left<=0){answer(-1);return}
+    g.raf=requestAnimationFrame(step);
+  })();
+}
+function paint(c,ans,p,ok){
+  var bs=$('g-opts').children;
+  for(var i=0;i<bs.length;i++){
+    bs[i].disabled=true;
+    if(i===ans)bs[i].classList.add('right');
+    else if(i===c)bs[i].classList.add('wrong');
+    else bs[i].classList.add('dim');
+  }
+  if(ok)setStat('me','+'+p,'good');else setStat('me',c<0?'時間到':'答錯','bad');
+}
+function oppResult(o){
+  G.oppShown=true;
+  if(o.missing)setStat('op','未作答','bad');
+  else if(o.ok)setStat('op','+'+o.pts,'good');
+  else setStat('op','答錯','bad');
+}
+function sendAnswer(g,i,ok,p,tries){
+  var n=net;if(!n)return;
+  gs('pvpAnswer',n.code,n.game,i,ok,p).then(function(v){if(net===n&&v&&v.ok)applyView(v)}).catch(function(){
+    if(tries<3&&G===g&&net===n)setTimeout(function(){sendAnswer(g,i,ok,p,tries+1)},900);
+  });
+}
+function answer(c){
+  var g=G;if(!g||g.locked||g.done)return;
+  g.locked=true;cancelAnimationFrame(g.raf);
+  var ms=Math.min(LIMIT,performance.now()-g.t0),i=g.i,q=g.set[i],ok=c===q.ans,p=ok?pointsFor(ms):0;
+  g.me+=p;if(ok)g.correct++;g.myAns[i]={ok:ok,pts:p};
+  $('g-tm').textContent=(ms/1000).toFixed(1);
+  paint(c,q.ans,p,ok);updateScore();
+  if(g.kind==='ai'){
+    var a=g.ai,ap=a.ok?pointsFor(a.ms):0;g.oppAns[i]={ok:a.ok,pts:ap};g.opp+=ap;
+    oppResult(g.oppAns[i]);updateScore();later(nextQ,1500);
+  }else{
+    sendAnswer(g,i,ok,p,0);
+    later(function(){if(!g.oppAns[i]){g.oppAns[i]={ok:false,pts:0,missing:true};checkAdvance(i)}},Math.max(0,LIMIT-ms)+5000);
+    checkAdvance(i);
+  }
+}
+function checkAdvance(i){
+  var g=G;if(!g||g.kind!=='pvp'||g.i!==i||!g.locked||g.rev[i]||g.done)return;
+  if(g.oppLeft&&!g.oppAns[i])g.oppAns[i]={ok:false,pts:0,missing:true};
+  var o=g.oppAns[i];if(!g.myAns[i]||!o)return;
+  g.rev[i]=true;g.opp+=o.pts;oppResult(o);updateScore();later(nextQ,1300);
+}
+function quitGame(){
+  var g=G;if(g){cancelAnimationFrame(g.raf);g.timers.forEach(clearTimeout)}
+  G=null;$('g-count').hidden=true;
+  if(net)leaveNet();
+  show('home');
+}
+async function finish(){
+  var g=G;if(!g||g.done)return;g.done=true;
+  if(g.kind==='pvp'&&net){net.phase='result';net.starting=false}
+  var win=g.me>g.opp,draw=g.me===g.opp,bonus=0,cb=0;
+  if(win){if(g.kind==='ai'){bonus=DIFF[g.diff].win;cb=10}else if(!g.oppLeft){bonus=40;cb=15}}
+  var gain=Math.round(g.me/4)+10+bonus,coins=Math.round(g.me/40)+5+cb;
+  noteSeen(g.set);
+  var before=profile.xp,L0=lvOf(before),saved=true;
+  if(online){
+    try{
+      var r=await gs('saveResult',{gain:gain,coins:coins,score:g.me,win:win});
+      if(r&&r.ok){profile=clean(r.profile);lb=r.board||lb;saveFail=false}else throw new Error('save');
+    }catch(e){saveFail=true;saved=false}
+  }else{
+    profile.xp+=gain;profile.coins+=coins;profile.games++;if(win)profile.wins++;profile.best=Math.max(profile.best,g.me);persistLocal();
+  }
+  if(G!==g)return;
+  var after=saved?profile.xp:before,L1=lvOf(after);
+  renderProfile();renderLB();
+  $('r-title').textContent=draw?'平手！':win?'你贏了！':'再接再厲';
+  $('r-title').className=win?'win':'';
+  $('r-me-name').textContent=nick();$('r-op-name').textContent=g.oppName;$('r-me-av').innerHTML=avatarSVG(profile.equip,'head');$('r-op-av').innerHTML=avatarSVG(g.oppAv,'head');
+  $('r-me-score').textContent=g.me;$('r-op-score').textContent=g.opp;
+  var sub='答對 '+g.correct+' / '+NQ+' 題';
+  if(g.kind==='pvp'&&g.oppLeft)sub+='。對手中途離線，沒有勝場獎勵。';
+  $('r-sub').textContent=sub;
+  $('r-xp').textContent=saved?('+'+gain+' 經驗值'):'這場成績未儲存';
+  $('r-coin').textContent=saved?('+'+coins+' 金幣（共 '+profile.coins+'）'):'這場的金幣沒有計入';
+  $('r-lv').textContent='Lv.'+L1+' '+titleOf(L1);
+  var bar=$('r-bar'),a0=xpAt(L0),b0=xpAt(L0+1);
+  bar.style.transition='none';bar.style.width=Math.round(100*(before-a0)/(b0-a0))+'%';
+  void bar.offsetWidth;bar.style.transition='';
+  var a1=xpAt(L1),b1=xpAt(L1+1);
+  requestAnimationFrame(function(){bar.style.width=Math.round(100*(after-a1)/(b1-a1))+'%'});
+  $('r-up').textContent=!saved?'連線有問題，這場的經驗值沒有計入。':(L1>L0?'升級了！Lv.'+L0+' → Lv.'+L1:'');
+  if(g.kind==='pvp')rematchBtn();
+  else{var ab=$('r-again');ab.disabled=false;ab.textContent='再來一場'}
+  show('result');
+}
+
+/* ---------- two-player room (polling Apps Script) ---------- */
+var ERR={notfound:'找不到這個房間代碼',full:'這個房間已經滿了',playing:'這個房間已經開始對戰',self:'不能加入自己建立的房間',noemail:'無法取得學校帳號',busy:'目前房間太多，請稍後再試'};
+function lobbyRender(){
+  var n=net,s=$('l-status');if(!n)return;
+  if(n.opp&&n.alive)s.textContent='對手 '+n.opp.nick+' 已加入，準備開始…';
+  else s.textContent=n.host?'等待同學加入…':'已加入房間，等待房主…';
+}
+function rematchBtn(){
+  var b=$('r-again');if(!net||!G||G.kind!=='pvp')return;
+  if(!net.opp||!net.alive){b.disabled=true;b.textContent='對手已離線'}
+  else if(net.host){b.disabled=false;b.textContent='再戰一場'}
+  else{b.disabled=true;b.textContent='等房主再戰…'}
+}
+function schedulePoll(ms){var n=net;if(!n)return;clearTimeout(n.t);n.t=setTimeout(function(){doPoll(n)},ms)}
+async function doPoll(n){
+  if(net!==n||n.busy)return;
+  n.busy=true;var v=null;
+  try{v=await gs('pvpPoll',n.code)}catch(e){v=null}
+  n.busy=false;if(net!==n)return;
+  if(!v||!v.ok){
+    if(v&&v.err==='notfound'){toast('房間已關閉');quitGame();return}
+    n.fail=(n.fail||0)+1;
+    if(n.fail>8){toast('連線中斷，請重新加入房間');quitGame();return}
+    schedulePoll(2000);return;
+  }
+  n.fail=0;applyView(v);
+  schedulePoll(G&&G.kind==='pvp'&&!G.done?1000:1300);
+}
+function applyView(v){
+  var n=net;if(!n||!v)return;
+  n.opp=v.opp?{nick:String(v.opp.nick||'對手').slice(0,10),lv:Math.max(1,Math.min(99,+v.opp.lv||1)),av:cleanEq(v.opp.av)}:null;
+  n.alive=!!v.alive;
+  if(n.phase==='lobby'){
+    lobbyRender();
+    if(n.host){
+      if(n.opp&&n.alive&&!n.starting){
+        n.starting=true;
+        setTimeout(function(){
+          if(net===n&&n.phase==='lobby'&&n.opp&&n.alive)hostStart();else n.starting=false;
+        },1500);
+      }
+    }else if(v.phase==='play'&&v.game>n.game)beginGame(v);
+    return;
+  }
+  if(n.phase==='result'){
+    rematchBtn();
+    if(!n.host&&v.phase==='play'&&v.game>n.game)beginGame(v);
+    return;
+  }
+  if(n.phase==='play'&&G&&G.kind==='pvp'&&!G.done){
+    if(v.game===n.game){
+      var a=v.oppAns||[];
+      for(var q=0;q<NQ;q++){
+        var x=a[q];
+        if(x&&!G.oppAns[q]){
+          G.oppAns[q]={ok:x[0]===1&&x[1]>0,pts:x[1]|0};
+          if(q===G.i&&!G.rev[q]){if(G.locked)checkAdvance(q);else if(!G.oppShown)setStat('op','已作答')}
+        }
+      }
+    }
+    if(!n.opp||!n.alive)n.leftN=(n.leftN||0)+1;else n.leftN=0;
+    if(n.leftN>=4&&!G.oppLeft){G.oppLeft=true;toast('對手已離線');if(G.locked)checkAdvance(G.i)}
+  }
+}
+async function hostStart(){
+  var n=net;if(!n||!n.host)return;
+  try{
+    var v=await gs('pvpStart',n.code,selUnits());
+    if(net!==n)return;
+    n.starting=false;
+    if(v&&v.ok&&v.phase==='play')beginGame(v);else toast('目前還不能開始，請稍後再試');
+  }catch(e){n.starting=false;toast('開始失敗，請再試一次')}
+}
+function beginGame(v){
+  var n=net;n.game=v.game;n.phase='play';n.leftN=0;
+  startGame('pvp',{seed:v.seed,units:cleanUnits(v.units),oppAv:n.opp?n.opp.av:{},oppName:n.opp?n.opp.nick:'對手',oppLv:n.opp?n.opp.lv:1});
+}
+async function enterRoom(code,host){
+  if(!online){toast('目前連不上伺服器，雙人對戰暫時不能用');return}
+  if(net)leaveNet();
+  $('l-range').textContent=host?rangeText(selUnits()):'考題範圍由房主決定。';
+  $('l-code').textContent=host?'····':code;
+  $('l-hint').textContent=host?'把這組代碼告訴同學，對方輸入後就會自動開始。':'正在進入房間…';
+  $('l-status').textContent='連線中…';show('lobby');
+  var r;
+  try{r=host?await gs('pvpCreate',nick(),lvOf(profile.xp)):await gs('pvpJoin',code,nick(),lvOf(profile.xp))}
+  catch(e){show('home');toast('連線失敗，請再試一次');return}
+  if(!r||!r.ok){show('home');toast(ERR[r&&r.err]||'無法進入房間');return}
+  if(curScreen()!=='lobby'){gs('pvpLeave',r.code).catch(noop);return}
+  net={code:r.code,host:host,phase:'lobby',opp:null,alive:false,game:0,t:0,starting:false,leftN:0,busy:false,fail:0};
+  $('l-code').textContent=r.code;
+  $('l-hint').textContent=host?'把這組代碼告訴同學，對方輸入後就會自動開始。':'已加入房間，等待房主開始。';
+  lobbyRender();schedulePoll(300);
+}
+function leaveNet(){
+  var n=net;net=null;if(!n)return;
+  clearTimeout(n.t);
+  gs('pvpLeave',n.code).catch(noop);
+}
+
+/* ---------- wiring ---------- */
+document.querySelectorAll('#diff button').forEach(function(b){
+  b.addEventListener('click',function(){
+    diff=b.dataset.d;document.querySelectorAll('#diff button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+  });
+});
+$('b-ai').addEventListener('click',function(){startGame('ai',{diff:diff,oppName:'電腦',oppLv:1,units:selUnits(),oppAv:AI_AV[diff]})});
+$('b-create').addEventListener('click',function(){enterRoom('',true)});
+$('f-join').addEventListener('submit',function(e){
+  e.preventDefault();var v=$('i-code').value.trim();
+  if(!/^\d{4}$/.test(v)){toast('請輸入 4 位數的房間代碼');return}
+  enterRoom(v,false);
+});
+$('l-cancel').addEventListener('click',function(){leaveNet();show('home')});
+$('f-nick').addEventListener('submit',function(e){
+  e.preventDefault();
+  var v=$('p-nick').value.replace(/\s+/g,' ').trim().slice(0,10);
+  if(!v){toast('暱稱不能是空白');return}
+  if(!online){profile.nick=v;persistLocal();renderProfile();toast('已更新暱稱');return}
+  gs('setNick',v).then(function(r){
+    if(r&&r.ok){profile=clean(r.profile);lb=r.board||lb;renderProfile();renderLB();toast('已更新暱稱')}
+    else toast('暱稱沒有儲存成功');
+  }).catch(function(){toast('暱稱沒有儲存成功')});
+});
+var qt=0;
+$('g-quit').addEventListener('click',function(){
+  var b=$('g-quit');
+  if(qt){clearTimeout(qt);qt=0;b.textContent='退出';quitGame();return}
+  b.textContent='再按一次確定退出';qt=setTimeout(function(){qt=0;b.textContent='退出'},3000);
+});
+$('r-home').addEventListener('click',function(){G=null;if(net)leaveNet();show('home')});
+$('r-again').addEventListener('click',function(){
+  if(G&&G.kind==='pvp'){if(net&&net.host){net.starting=true;hostStart()}return}
+  var d=G&&G.diff||diff;startGame('ai',{diff:d,oppName:'電腦',oppLv:1,units:selUnits(),oppAv:AI_AV[d]});
+});
+document.addEventListener('keydown',function(e){
+  if(!G||G.locked||curScreen()!=='game'||e.ctrlKey||e.metaKey||e.altKey)return;
+  var k=e.key.toLowerCase(),i='1234'.indexOf(k);if(i<0)i='abcd'.indexOf(k);
+  if(i>=0&&i<4)answer(i);
+});
+
+$('rg-chips').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var u=b.dataset.u,cur=selUnits(),all=cur.length===UNITS.length;
+  if(u==='*')selU=allUnits();
+  else if(all)selU=[u];
+  else if(cur.indexOf(u)>=0){selU=cur.filter(function(x){return x!==u});if(!selU.length)selU=allUnits()}
+  else selU=cur.concat([u]);
+  savePrefs();renderRange();
+});
+$('bg-pick').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  bgPick=b.dataset.s;savePrefs();renderBgPick();curBg='';applyBg(curScreen());
+});
+function openShop(){pend='';renderShop();show('shop')}
+$('b-shop').addEventListener('click',openShop);
+$('chip').addEventListener('click',function(){if(curScreen()==='home')openShop()});
+$('sh-back').addEventListener('click',function(){pend='';show('home')});
+$('sh-tabs').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  shopTab=b.dataset.s;pend='';renderShop();
+});
+
+/* ---------- start ---------- */
+async function init(){
+  loadLocal();loadPrefs();renderRange();renderBgPick();applyBg('home');renderProfile();renderLB();
+  try{
+    var r=await gs('bootstrap');
+    if(r&&r.ok){online=true;profile=clean(r.profile);lb=r.board||[]}
+    else if(r&&r.err==='noemail')authErr=true;
+  }catch(e){}
+  if(!online){
+    $('b-create').disabled=true;
+    $('f-join').querySelectorAll('input,button').forEach(function(x){x.disabled=true});
+    $('pvp-note').textContent='目前連不上伺服器，雙人對戰暫時不能用。請從老師提供的網址開啟。';
+  }
+  renderProfile();renderLB();
+  setInterval(function(){
+    if(online&&curScreen()==='home'&&!document.hidden){
+      gs('board').then(function(r){if(r&&r.ok){lb=r.board;renderLB()}}).catch(noop);
+    }
+  },60000);
+}
+init();
+})();
+</script>
